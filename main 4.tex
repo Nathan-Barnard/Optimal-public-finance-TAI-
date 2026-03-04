@@ -1,0 +1,2085 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}  
+\usepackage{amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{assumption}{Assumption}
+\usepackage{natbib}   
+\usepackage{setspace}
+
+\title{TANK model Poisson shock 2.5}
+\author{Nathan Barnard}
+\date{January 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\section{Primitives and timing}
+
+Time is continuous, $t \in [0,\infty)$. There are two groups of agents: workers and capital owners. Workers supply labour inelastically and do not save. Capital owners hold the economy's capital stock and choose consumption.
+
+\subsection{Population and endowments}
+
+Let $\chi \in (0,1)$ denote the mass of workers. The mass of capital owners is $1-\chi$.
+Labour supply is normalised to one in efficiency units. Concretely, workers supply one unit of raw labour in aggregate, and efficiency units are given by labour-augmenting productivity $A_t$ defined below. Capital owners supply no labour.
+
+\subsection{Aggregate uncertainty}
+
+There is no aggregate Brownian risk. The only aggregate uncertainty is a Poisson arrival of an automation frontier jump.
+
+Let $\tau$ be the automation arrival time. Conditional on $\tau>t$, the hazard rate is constant:
+$$
+\Pr(\tau \in [t,t+dt] \mid \tau>t) = \lambda\,dt,
+\qquad \lambda>0.
+$$
+
+\subsection{Idiosyncratic risk and incomplete markets}
+
+There is idiosyncratic fundamental risk at the level of individual capital owners (equivalently, at the level of the representative firm/subset of tasks that each capital owner is exposed to). These idiosyncratic shocks wash out in the aggregate by a law of large numbers, so aggregate quantities and factor prices are deterministic conditional on the automation regime.
+
+Financial markets are incomplete: there is no menu of claims that allows agents to fully insure idiosyncratic return risk. In this first model we use a representative capital owner to characterise behaviour and pricing, and we do not track the full cross-sectional distribution (this is the maintained approximation in this draft).
+
+\subsection{Technology and labour-augmenting productivity}
+
+Labour productivity is purely labour-augmenting (Harrod-neutral):
+$$
+A_t = A_0 e^{g t},
+\qquad A_0>0,\quad g \in \mathbb{R}.
+$$
+Productivity $A_t$ scales effective labour input in tasks performed with labour and does not directly scale tasks performed with capital.
+
+\subsection{Tasks and aggregation}
+
+Production consists of a continuum of tasks indexed by $j \in [0,1]$ (unit measure). Aggregate output is a Cobb--Douglas aggregator over task outputs:
+$$
+Y_t = \exp\left(\int_0^1 \log y_t(j)\,dj\right).
+$$
+Each task $j$ is produced either with labour or with capital, depending on whether that task is automated. The per-task production functions will be specified below and will be such that $A_t$ enters only through effective labour $A_t \ell_t(j)$ when the task is performed with labour.
+
+\subsection{Automation frontier and adoption}
+
+Let $I^{tech}_t \in [0,1]$ denote the technologically feasible measure of tasks that can be automated at time $t$. The feasible frontier jumps once at $\tau$ by a constant amount $\Delta I>0$:
+$$
+I^{tech}_t = I^{tech}_0 + \Delta I \cdot \mathbf{1}\{t \ge \tau\},
+\qquad I^{tech}_0 \in [0,1],\quad \Delta I>0,
+$$
+with $I^{tech}_0+\Delta I \le 1$.
+
+Let $I^{eq}_t$ denote equilibrium automation (the measure of tasks actually automated). In the main text we impose:
+
+\begin{assumption}[Frontier adoption]
+Along the equilibrium path, adoption is always at the feasible frontier:
+$$
+I^{eq}_t = I^{tech}_t \quad \text{for all } t.
+$$
+\end{assumption}
+
+In an appendix we will derive conditions on wages and rental rates under which frontier adoption is optimal (equivalently, conditions under which the price-based adoption cutoff is weakly above the feasible frontier).
+
+\subsection{Assets, numeraire, and capital valuation}
+
+Consumption is the numeraire. There is no separate capital-good sector, no adjustment costs, and no installation wedge. The unit price of installed capital is therefore normalised to one.
+
+We identify aggregate wealth of capital owners with the physical capital stock:
+$$
+K_t = (1-\chi)W_t,
+$$
+so that capital accumulation and wealth accumulation coincide in equilibrium.
+
+\subsection{Taxes and transfers}
+
+There is a proportional tax on income received by capital owners. All tax revenue is rebated lump-sum to workers each instant. In this model the tax applies to the realised capital-owner income flow, including the idiosyncratic component of returns (so the risky component is also scaled by the after-tax factor).
+
+\paragraph{}
+
+We postpone the formal government budget constraint and the household budget constraints to the household section, after defining factor prices and capital income.
+
+
+\section{Households and government transfers}
+
+There is a unit mass of agents. A mass $\chi \in (0,1)$ are workers and a mass $1-\chi$ are capital owners. Workers supply labour inelastically and do not save. Capital owners choose consumption and own the economy's capital stock.
+
+We maintain the modelling approximation used in this first draft: fundamental risk is idiosyncratic across a continuum of capital owners and washes out in the aggregate, so aggregate quantities and factor prices are deterministic conditional on the automation regime. We nevertheless represent capital owners by a single representative capital owner and allow for an idiosyncratic return shock in their budget constraint in order to capture priced risk in incomplete markets.
+
+\subsection{Automation regime}
+
+Let $\tau$ denote the (random) automation arrival time with constant hazard $\lambda>0$:
+$$
+\Pr(\tau \in [t,t+dt] \mid \tau>t) = \lambda\,dt.
+$$
+Define the regime indicator
+$$
+s_t := \mathbf{1}\{t \ge \tau\} \in \{0,1\},
+$$
+so $s_t=0$ in the pre-automation regime and $s_t=1$ in the post-automation regime. In the main text we assume frontier adoption, so equilibrium adoption satisfies $I^{eq}_t = I^{tech}_t$ and the regime switch at $\tau$ induces a discrete change in equilibrium objects (wages, returns, etc.).
+
+\subsection{Taxes and rebates}
+
+The government levies a proportional tax at rate $\tau_k \in [0,1)$ on the income received by capital owners. All tax revenue is rebated lump-sum to workers each instant. The government does not issue debt or accumulate assets.
+
+Let $T_t$ denote aggregate tax revenue at date $t$, and let $T^W_t$ denote the transfer received by each worker at date $t$. The balanced-budget rebate rule is
+$$
+\chi T^W_t = T_t.
+$$
+
+\subsection{Workers}
+
+Workers supply labour inelastically and do not own capital. They are hand-to-mouth: at each instant they consume labour income plus the lump-sum transfer.
+
+Let $w_t$ denote the wage per unit of aggregate raw labour. Aggregate raw labour supply is normalised to one, so aggregate labour income is $w_t$. Since the mass of workers is $\chi$, labour income per worker is $w_t/\chi$.
+
+Let $c^W_t$ denote consumption per worker. The worker budget constraint is
+$$
+c^W_t = \frac{w_t}{\chi} + T^W_t,
+\qquad c^W_t \ge 0.
+$$
+
+\subsection{Capital owners (representative capital owner)}
+
+Capital owners supply no labour income. They own the aggregate capital stock and choose consumption.
+
+\paragraph{Wealth and capital.}
+Installed capital has unit price (consumption numeraire, no adjustment costs), so we identify the wealth of capital owners with the physical capital stock:
+$$
+K_t = (1-\chi)W_t,
+\qquad W_t \ge 0.
+$$
+
+\paragraph{After-tax return process.}
+Let $B_t$ be a Brownian motion representing idiosyncratic fundamental risk. This risk is idiosyncratic across a continuum of capital owners and therefore washes out in the aggregate. In particular, aggregate factor prices and aggregate tax revenue are deterministic conditional on the regime.
+
+Let $r_t^{s}$ denote the pre-tax expected return on wealth in regime $s \in \{0,1\}$, and let $\sigma_t^{s}$ denote the pre-tax volatility of the return on wealth in regime $s$. Both $(r_t^{s},\sigma_t^{s})$ are equilibrium objects and may depend on time and on the regime, but not on the realisation of $B_t$.
+
+The capital-income tax applies to realised capital-owner income, including the idiosyncratic component. Hence the representative capital owner's \emph{after-tax} wealth dynamics are
+$$
+dW_t
+=
+\Big((1-\tau_k)\, r_t^{s_t}\, W_t - c^K_t\Big)\,dt
++
+(1-\tau_k)\, \sigma_t^{s_t}\, W_t\, dB_t,
+\qquad c^K_t \ge 0,
+$$
+where $c^K_t$ is consumption of the representative capital owner. Wealth remains continuous at the regime switch $t=\tau$ because installed capital has unit price and there are no adjustment-cost wedges.
+
+\paragraph{Tax revenue and transfers.}
+Since the idiosyncratic return component has cross-sectional mean zero, aggregate tax revenue depends only on the drift component of taxable capital income:
+$$
+T_t = \tau_k\, r_t^{s_t}\, K_t.
+$$
+The per-worker transfer implied by the balanced-budget rule is therefore
+$$
+T^W_t = \frac{T_t}{\chi} = \frac{\tau_k}{\chi}\, r_t^{s_t}\, K_t.
+$$
+
+\paragraph{Capital owner problem.}
+The representative capital owner chooses an admissible consumption process $(c^K_t)_{t\ge 0}$ to maximise
+$$
+\sup_{(c^K_t)_{t\ge 0}}
+\;
+\mathbb{E}\left[\int_0^\infty e^{-\rho t}\frac{(c^K_t)^{1-\gamma}}{1-\gamma}\,dt\right]
+$$
+subject to the wealth dynamics above, the non-negativity constraint $W_t \ge 0$, and the transversality condition
+$$
+\lim_{T\to\infty}\mathbb{E}\left[e^{-\rho T} V^{s_T}(T,W_T)\right]=0,
+$$
+where $V^{s}(t,w)$ denotes the value function in regime $s$.
+
+\subsection{Recursive formulation and Poisson risk}
+
+Let $V^{1}(t,w)$ denote the value function in the post-automation regime ($s=1$), and let $V^{0}(t,w)$ denote the value function in the pre-automation regime ($s=0$).
+
+\paragraph{Post-automation value function ($s=1$).}
+In the post-automation regime there are no further regime switches. The value function satisfies
+$$
+\rho V^{1}(t,w)
+=
+\sup_{c \ge 0}
+\left\{
+\frac{c^{1-\gamma}}{1-\gamma}
++
+\partial_t V^{1}(t,w)
++
+\partial_w V^{1}(t,w)\Big((1-\tau_k) r_t^{1}\, w - c\Big)
+\right.
+$$
+$$
+\left.
++
+\frac{1}{2}\,\partial_{ww} V^{1}(t,w)\,(1-\tau_k)^2 (\sigma_t^{1})^2 w^2
+\right\}.
+$$
+
+\paragraph{Pre-automation value function ($s=0$).}
+In the pre-automation regime, the capital owner faces a constant hazard $\lambda$ of switching to the post-automation regime. Since wealth is continuous at the regime switch, the pre-automation value function satisfies
+$$
+\rho V^{0}(t,w)
+=
+\sup_{c \ge 0}
+\left\{
+\frac{c^{1-\gamma}}{1-\gamma}
++
+\partial_t V^{0}(t,w)
++
+\partial_w V^{0}(t,w)\Big((1-\tau_k) r_t^{0}\, w - c\Big)
+\right.
+$$
+$$
+\left.
++
+\frac{1}{2}\,\partial_{ww} V^{0}(t,w)\,(1-\tau_k)^2 (\sigma_t^{0})^2 w^2
++
+\lambda\Big(V^{1}(t,w)-V^{0}(t,w)\Big)
+\right\}.
+$$
+
+\section{Firms: task production, final output, and factor demands}
+\label{sec:firms}
+
+This section sets up the firms’ problems and derives labour and capital demand, taking the automation frontier (and the maintained frontier-adoption assumption) as given.
+
+\subsection{Task space and aggregation}
+
+Tasks are indexed by $i \in [0,1]$ (unit measure). At date $t$, task $i$ produces $y_t(i)$ units of the final good. Final output is a Cobb--Douglas (log) aggregator over tasks:
+$$
+\ln Y_t = \int_0^1 \ln y_t(i)\,di
+\qquad \Longleftrightarrow \qquad
+Y_t = \exp\left(\int_0^1 \ln y_t(i)\,di\right).
+$$
+There is a single sector; $Y_t$ is both output and the consumption numeraire.
+
+\subsection{Task-level technology and unit costs}
+
+Let $A_t$ denote labour-augmenting productivity (deterministic), and let $\ell_t(i)$ and $k_t(i)$ denote raw labour and capital services used in task $i$.
+
+Tasks are technologically of two types at date $t$:
+\begin{itemize}
+\item non-automatable tasks (must use labour),
+\item automatable tasks (can use either labour or capital).
+\end{itemize}
+
+Task technologies are linear in the relevant input:
+\begin{align*}
+\text{labour method:}\qquad & y_t(i) = A_t \ell_t(i),\\
+\text{capital method:}\qquad & y_t(i) = k_t(i).
+\end{align*}
+
+Let $w_t$ be the wage per unit of raw labour and let $R^K_t$ be the rental rate of capital gross of depreciation. Then the unit costs of producing one unit of task output using labour or capital are
+$$
+UC^L_t = \frac{w_t}{A_t},
+\qquad
+UC^K_t = R^K_t.
+$$
+
+Let $I^{tech}_t \in [0,1]$ denote the feasible automation frontier. Under the maintained frontier-adoption assumption, the set of automated tasks has measure $I_t := I^{eq}_t = I^{tech}_t$. Without loss of generality index tasks so that automated tasks are $i \in [0,I_t]$ and non-automated tasks are $i \in (I_t,1]$:
+$$
+\mathcal K_t := [0,I_t],
+\qquad
+\mathcal L_t := (I_t,1].
+$$
+
+Under frontier adoption, factor prices satisfy $UC^K_t < UC^L_t$ whenever $i \le I_t$, so tasks in $\mathcal K_t$ are produced with capital while tasks in $\mathcal L_t$ are produced with labour. Perfect competition at the task level implies zero profits, hence equilibrium task prices equal unit costs:
+$$
+p_t(i) =
+\begin{cases}
+R^K_t, & i \in \mathcal K_t,\\[6pt]
+\frac{w_t}{A_t}, & i \in \mathcal L_t.
+\end{cases}
+$$
+
+\subsection{Final-good producer}
+
+A competitive final-good producer chooses task quantities $\{y_t(i)\}_{i\in[0,1]}$ to maximise flow profits
+$$
+\Pi_t = Y_t - \int_0^1 p_t(i)\,y_t(i)\,di
+$$
+subject to the aggregation technology above, taking $\{p_t(i)\}$ as given.
+
+The first-order condition for each $i$ uses $\partial Y_t / \partial y_t(i) = Y_t / y_t(i)$:
+$$
+\frac{Y_t}{y_t(i)} = p_t(i)
+\qquad \Longrightarrow \qquad
+y_t(i) = \frac{Y_t}{p_t(i)}.
+$$
+Hence task demands are constant within each set:
+$$
+y_t(i) =
+\begin{cases}
+\displaystyle \frac{Y_t}{R^K_t}, & i \in \mathcal K_t,\\[10pt]
+\displaystyle \frac{A_t Y_t}{w_t}, & i \in \mathcal L_t.
+\end{cases}
+$$
+
+\subsection{Labour and capital demand}
+
+Task-level input demands follow from the linear technologies.
+
+\paragraph{Labour demand.}
+For $i \in \mathcal L_t$, $\ell_t(i) = y_t(i)/A_t = Y_t/w_t$. Therefore aggregate labour demand is
+$$
+L_t^d = \int_{i\in\mathcal L_t} \ell_t(i)\,di
+      = (1-I_t)\,\frac{Y_t}{w_t}.
+$$
+
+\paragraph{Capital demand.}
+For $i \in \mathcal K_t$, $k_t(i) = y_t(i) = Y_t/R^K_t$. Therefore aggregate capital demand is
+$$
+K_t^d = \int_{i\in\mathcal K_t} k_t(i)\,di
+      = I_t\,\frac{Y_t}{R^K_t}.
+$$
+
+Equivalently, these can be inverted to express factor prices as
+$$
+w_t = (1-I_t)\,\frac{Y_t}{L_t^d},
+\qquad
+R^K_t = I_t\,\frac{Y_t}{K_t^d}.
+$$
+
+\subsection{Aggregate reduced form}
+
+Using the symmetry within $\mathcal K_t$ and $\mathcal L_t$, the implied allocation produces the following aggregate production function, mapping factor inputs into final output:
+$$
+Y_t
+=
+\left(\frac{A_t L_t}{1-I_t}\right)^{1-I_t}
+\left(\frac{K_t}{I_t}\right)^{I_t},
+\qquad I_t \in (0,1).
+$$
+Equivalently, this can be written as
+$$
+Y_t = \Phi(I_t)\,K_t^{I_t}\,(A_t L_t)^{1-I_t},
+\qquad
+\Phi(I) := I^{-I}(1-I)^{-(1-I)}.
+$$
+
+The rental rate of capital gross of depreciation is the marginal product:
+$$
+R^K_t = \frac{\partial Y_t}{\partial K_t} = I_t\,\frac{Y_t}{K_t}.
+$$
+The net expected return on wealth used in the household block is then
+$$
+r_t = R^K_t - \delta,
+$$
+where $\delta$ is the depreciation rate from the capital accumulation equation.
+
+\section{Market clearing and equilibrium conditions}
+\label{sec:mc}
+
+This section closes the model by imposing feasibility, market clearing, the government rebate rule, and the maintained frontier-adoption assumption. Throughout, installed capital has unit price and the representative capital owner's wealth equals the aggregate capital stock, $W_t = K_t$.
+
+\subsection{Automation path}
+
+The feasible automation frontier is
+$$
+I^{tech}_t = I^{tech}_0 + \Delta I \cdot \mathbf{1}\{t \ge \tau\},
+\qquad I^{tech}_0 \in [0,1],\quad \Delta I>0,\quad I^{tech}_0+\Delta I \le 1,
+$$
+where $\tau$ arrives with constant hazard $\lambda>0$.
+
+In the main text we assume frontier adoption, so equilibrium adoption satisfies
+$$
+I_t := I^{eq}_t = I^{tech}_t.
+$$
+
+\subsection{Labour market clearing}
+
+Aggregate raw labour supply is normalised to one:
+$$
+L_t = 1.
+$$
+Labour-market clearing requires that firms' labour demand equals supply. Using the labour-demand expression from Section \ref{sec:firms},
+$$
+L_t^d = (1-I_t)\,\frac{Y_t}{w_t},
+$$
+labour market clearing implies
+$$
+1 = (1-I_t)\,\frac{Y_t}{w_t}
+\qquad\Longleftrightarrow\qquad
+w_t = (1-I_t)\,Y_t.
+$$
+
+\subsection{Capital market clearing}
+
+All installed capital is owned by capital owners. Capital-market clearing equates firms' capital demand to the aggregate stock:
+$$
+K_t^d = K_t.
+$$
+Using the capital-demand expression from Section \ref{sec:firms},
+$$
+K_t^d = I_t\,\frac{Y_t}{R^K_t},
+$$
+capital market clearing implies
+$$
+K_t = I_t\,\frac{Y_t}{R^K_t}
+\qquad\Longleftrightarrow\qquad
+R^K_t = I_t\,\frac{Y_t}{K_t}.
+$$
+The net expected return on wealth used in the household block is
+$$
+r_t^{s_t} = R^K_t - \delta,
+$$
+where $\delta \ge 0$ is the depreciation rate.
+
+\subsection{Goods market clearing and capital accumulation}
+
+Aggregate consumption is
+$$
+C_t = \chi c^W_t + (1-\chi)c^K_t.
+$$
+With no adjustment costs and a single final good, the resource constraint is
+$$
+Y_t = C_t + \dot K_t + \delta K_t,
+$$
+equivalently,
+$$
+\dot K_t = Y_t - C_t - \delta K_t.
+$$
+
+\subsection{Government budget balance and transfers}
+
+The government taxes capital-owner income at rate $\tau_k$ and rebates all revenues lump-sum to workers each instant.
+
+Aggregate tax revenue is
+$$
+T_t = \tau_k\, r_t^{s_t}\, K_t,
+$$
+and the balanced-budget rebate rule is
+$$
+\chi T^W_t = T_t
+\qquad\Longleftrightarrow\qquad
+T^W_t = \frac{\tau_k}{\chi}\, r_t^{s_t}\, K_t.
+$$
+
+Workers are hand-to-mouth, so their consumption is pinned down by wages and transfers:
+$$
+c^W_t = \frac{w_t}{\chi} + T^W_t.
+$$
+
+\subsection{Output as a reduced-form function of $(K_t,I_t)$}
+
+Combining the firms' reduced form from Section \ref{sec:firms} with labour-market clearing $L_t=1$, aggregate output is
+$$
+Y_t
+=
+\left(\frac{A_t}{1-I_t}\right)^{1-I_t}
+\left(\frac{K_t}{I_t}\right)^{I_t},
+\qquad I_t \in (0,1).
+$$
+Equivalently,
+$$
+Y_t = \Phi(I_t)\,K_t^{I_t}\,A_t^{1-I_t},
+\qquad
+\Phi(I) := I^{-I}(1-I)^{-(1-I)}.
+$$
+In particular, conditional on the regime (and hence on the deterministic path of $I_t$), $Y_t$ is deterministic given $K_t$.
+
+\subsection{Equilibrium definition}
+
+Given primitives $(\rho,\gamma,\lambda,\Delta I,\tau_k,\delta)$, deterministic labour-augmenting productivity $(A_t)_{t\ge 0}$, and initial conditions $(K_0,I^{tech}_0)$, an equilibrium consists of:
+
+\begin{itemize}
+\item paths for aggregate quantities $(Y_t,C_t,K_t)$ and prices $(w_t,R^K_t)$,
+\item household objects $(c^W_t,c^K_t,T^W_t)$ and value functions $(V^0,V^1)$,
+\item an automation path $I_t = I^{tech}_t$ driven by the Poisson time $\tau$,
+\end{itemize}
+
+\noindent such that, for all $t\ge 0$:
+\begin{enumerate}
+\item Firms choose task inputs and outputs optimally given prices (Section \ref{sec:firms}), implying the reduced-form output function and factor demands.
+\item Households satisfy their budget constraints and the capital owner's optimality conditions (Section 2).
+\item The government budget balances and rebates capital-income tax revenue to workers.
+\item Labour, capital, and goods markets clear as above.
+\item Frontier adoption holds: $I_t = I^{tech}_t$.
+\end{enumerate}
+
+%========================================================
+% Equilibrium system in operator / functional form
+%========================================================
+
+\subsection*{Equilibrium system (functional-analytic statement)}
+
+Fix primitives
+$$
+(\rho,\gamma,\delta,\tau_k,\lambda,\Delta I,\chi,A_0,g,\sigma),
+\qquad \gamma>0,\ \rho>0,\ \delta\ge 0,\ \tau_k\in[0,1),\ \chi\in(0,1),
+$$
+and initial capital $K_0>0$.
+Labour-augmenting productivity is deterministic:
+$$
+A(t)=A_0 e^{gt}.
+$$
+Automation is at the frontier, with one Poisson jump time $\tau$:
+$$
+I(t) = I_0 + \Delta I\cdot \mathbf{1}\{t\ge \tau\},
+\qquad I_0\in(0,1),\ I_0+\Delta I\in(0,1).
+$$
+
+We work with two regime value functions $V^0,V^1$ (pre- and post-automation). Wealth equals installed capital and the unit price of capital is one.
+
+\subsection*{Unknowns}
+
+The unknown equilibrium objects are
+$$
+\left(V^0,V^1,K\right),
+$$
+where $V^s:[0,\infty)\times\mathbb{R}_+\to\mathbb{R}$ are value functions and
+$K:[0,\infty)\to\mathbb{R}_+$ is aggregate capital (continuous at $t=\tau$).
+
+\subsection*{Static (within-date) equilibrium operators}
+
+For any $(K,I,A)$ define output and factor prices by
+$$
+Y(t) = \Phi(I(t))\,K(t)^{I(t)}\,A(t)^{1-I(t)},
+\qquad
+\Phi(I):=I^{-I}(1-I)^{-(1-I)},
+$$
+$$
+w(t) = (1-I(t))\,Y(t),
+\qquad
+R(t) = I(t)\,\frac{Y(t)}{K(t)},
+\qquad
+r(t)=R(t)-\delta.
+$$
+
+Government transfers (balanced budget, rebates to workers):
+$$
+T(t) = \frac{\tau_k}{\chi}\,r(t)\,K(t).
+$$
+
+Worker consumption (hand-to-mouth):
+$$
+c^W(t) = \frac{w(t)}{\chi} + T(t).
+$$
+
+\subsection*{Capital-owner policy operator}
+
+Preferences are CRRA:
+$$
+u(c)=\frac{c^{1-\gamma}}{1-\gamma}.
+$$
+Given $V^s$, the optimal consumption rule is defined pointwise by the FOC
+$$
+c^K_s(t,w) = \left(V^s_w(t,w)\right)^{-1/\gamma},
+\qquad s\in\{0,1\}.
+$$
+Under the representative-capital-owner closure, aggregate capital-owner consumption is
+$$
+c^K(t) = 
+\begin{cases}
+c^K_0(t,K(t)), & t<\tau,\\
+c^K_1(t,K(t)), & t\ge \tau.
+\end{cases}
+$$
+
+Aggregate consumption is
+$$
+C(t)=\chi c^W(t) + (1-\chi)c^K(t).
+$$
+
+\subsection*{Capital accumulation (goods market clearing)}
+
+Capital evolves according to the resource constraint
+$$
+\dot K(t) = Y(t) - C(t) - \delta K(t),
+\qquad K(0)=K_0,
+$$
+with $K(t)$ continuous at $t=\tau$.
+
+\subsection*{Capital-owner HJBs (with Poisson risk pre-automation)}
+
+The capital owner faces after-tax return volatility $\sigma$ on wealth, and the capital-income tax applies to realised returns (so the diffusion term is scaled by $(1-\tau_k)$).
+
+Post-automation HJB (no further regime switch):
+$$
+\rho V^1(t,w)
+=
+\sup_{c\ge 0}\Big\{
+u(c)
++ V^1_t(t,w)
++ V^1_w(t,w)\big((1-\tau_k)\,r(t)\,w - c\big)
+$$
+$$
+\qquad\qquad\qquad\qquad
++ \tfrac12 V^1_{ww}(t,w)\,(1-\tau_k)^2\sigma^2 w^2
+\Big\},
+\qquad t\ge \tau.
+$$
+
+Pre-automation HJB (Poisson intensity $\lambda$, continuation value $V^1$):
+$$
+\rho V^0(t,w)
+=
+\sup_{c\ge 0}\Big\{
+u(c)
++ V^0_t(t,w)
++ V^0_w(t,w)\big((1-\tau_k)\,r(t)\,w - c\big)
+$$
+$$
+\qquad\qquad\qquad\qquad
++ \tfrac12 V^0_{ww}(t,w)\,(1-\tau_k)^2\sigma^2 w^2
++ \lambda\big(V^1(t,w)-V^0(t,w)\big)
+\Big\},
+\qquad t<\tau.
+$$
+
+\subsection*{Transversality}
+
+The capital-owner problem is closed by a transversality condition. One standard sufficient condition is:
+$$
+\limsup_{T\to\infty}\; \mathbb{E}\big[e^{-\rho T} V^{s_T}(T,W_T)\big]=0,
+\qquad W_T=K(T),
+\qquad s_T=\mathbf{1}\{T\ge\tau\}.
+$$
+
+\subsection*{Definition (equilibrium as an operator equation)}
+
+Define the residual operator $\mathcal{F}$ that maps $(V^0,V^1,K)$ into:
+\begin{enumerate}
+\item the pre-automation HJB residual (a function on $t<\tau, w\ge 0$),
+\item the post-automation HJB residual (a function on $t\ge \tau, w\ge 0$),
+\item the capital accumulation residual (a function on $t\ge 0$),
+\end{enumerate}
+after substituting the static operators for $(Y,w,r,T,c^W)$ and the policy operator for $c^K$.
+
+An equilibrium is a triple $(V^0,V^1,K)$ such that
+$$
+\mathcal{F}(V^0,V^1,K)=0,
+$$
+together with the initial condition $K(0)=K_0$ and continuity of $K(t)$ at the regime switch $t=\tau$.
+
+\section*{General equilibrium}
+
+\section{Solving the model in efficiency units}
+\label{sec:solve_efficiency}
+
+\subsection{A bridge to the stationary (time-homogeneous) representation}
+
+To solve for the full transition path, it is convenient to work in efficiency units. Labour-augmenting productivity is deterministic and grows at rate $g$, so we detrend all real quantities by $A_t$ and treat the automation state as a discrete regime. Conditional on the regime, equilibrium prices and quantities can be written as functions of a single detrended aggregate state (capital in efficiency units). The Poisson automation event changes the regime and therefore the rental rate and wage schedule, but physical capital (and hence detrended capital) is continuous at the jump because the unit price of installed capital is normalised to one and there are no adjustment costs or transaction frictions.
+
+\subsection{Stationary mapping in efficiency units (given the capital-owner policy)}
+
+Productivity grows as
+$$
+A_t = A_0 e^{g t}.
+$$
+Labour supply is normalised to one:
+$$
+L_t \equiv 1.
+$$
+
+Define aggregate capital in efficiency units
+$$
+k_t := \frac{K_t}{A_t}.
+$$
+The economy has two regimes $s\in\{0,1\}$:
+\begin{itemize}
+\item regime $s=0$ (pre-automation): $I^0 = I_0$ and the automation arrival intensity is $\lambda$,
+\item regime $s=1$ (post-automation): $I^1 = I_1 := I_0+\Delta I$ and there is no further arrival.
+\end{itemize}
+We impose global frontier adoption, so the equilibrium automation share is $I^s$ in regime $s$.
+
+\paragraph{Production and factor prices as functions of $(k_t,s)$.}
+Let
+$$
+\Phi(I) := I^{-I}(1-I)^{-(1-I)}.
+$$
+In regime $s$, output in efficiency units is
+$$
+\tilde Y_t := \frac{Y_t}{A_t} = \Phi(I^s)\,k_t^{I^s}.
+$$
+The wage (per unit raw labour) in efficiency units is
+$$
+\tilde w_t := \frac{w_t}{A_t} = (1-I^s)\,\tilde Y_t.
+$$
+The gross rental rate of capital is
+$$
+R_t = I^s\,\frac{Y_t}{K_t} = I^s\,\frac{\tilde Y_t}{k_t}
+= I^s\,\Phi(I^s)\,k_t^{I^s-1},
+$$
+and the net (pre-tax) return on wealth is
+$$
+r_t = R_t - \delta.
+$$
+
+\paragraph{Scaling between aggregate capital and per-capital-owner wealth.}
+A mass $1-\chi$ are capital owners. Let $W_t$ denote wealth per capital owner. Aggregate capital is
+$$
+K_t = (1-\chi)\,W_t,
+\qquad\text{so}\qquad
+\tilde W_t := \frac{W_t}{A_t} = \frac{k_t}{1-\chi}.
+$$
+
+\paragraph{Government budget and transfers (efficiency units).}
+Capital income is taxed at rate $\tau_k$ on net capital income. The idiosyncratic component is literally taxed, but has mean zero across the continuum so aggregate tax revenue is determined by the drift component.
+
+Aggregate tax revenue is
+$$
+\mathcal{T}_t = \tau_k\,r_t\,K_t,
+$$
+so tax revenue in efficiency units is
+$$
+\tilde{\mathcal{T}}_t := \frac{\mathcal{T}_t}{A_t} = \tau_k\,r_t\,k_t.
+$$
+All tax revenue is rebated lump-sum to workers. With a mass $\chi$ of workers, the transfer per worker is
+$$
+T_t = \frac{\mathcal{T}_t}{\chi},
+\qquad
+\tilde T_t := \frac{T_t}{A_t} = \frac{1}{\chi}\,\tilde{\mathcal{T}}_t
+= \frac{\tau_k}{\chi}\,r_t\,k_t.
+$$
+
+\paragraph{Workers (hand-to-mouth) in efficiency units.}
+Per-worker labour income is $w_t/\chi$, so per-worker consumption is
+$$
+c^W_t = \frac{w_t}{\chi} + T_t,
+\qquad
+\tilde c^W_t := \frac{c^W_t}{A_t}
+= \frac{\tilde w_t}{\chi} + \tilde T_t.
+$$
+Aggregate worker consumption in efficiency units is therefore
+$$
+\tilde C^W_t := \frac{1}{A_t}\,\chi c^W_t
+= \chi \tilde c^W_t
+= \tilde w_t + \tilde{\mathcal{T}}_t.
+$$
+
+\paragraph{Capital owners and total consumption in efficiency units.}
+Let $c^K_t$ denote consumption per capital owner, and define
+$$
+\tilde c^K_t := \frac{c^K_t}{A_t}.
+$$
+Aggregate capital-owner consumption (efficiency units) is
+$$
+\tilde C^K_t := \frac{1}{A_t}\,(1-\chi)c^K_t = (1-\chi)\tilde c^K_t.
+$$
+Total aggregate consumption (efficiency units) is
+$$
+\tilde C_t := \frac{C_t}{A_t} = \tilde C^W_t + \tilde C^K_t
+= \chi \tilde c^W_t + (1-\chi)\tilde c^K_t.
+$$
+
+\paragraph{Goods market clearing and the law of motion for $k_t$.}
+The aggregate resource constraint is
+$$
+\dot K_t = Y_t - C_t - \delta K_t.
+$$
+Dividing by $A_t$ and using $\dot A_t = gA_t$ yields the evolution of detrended capital:
+$$
+\dot k_t = \tilde Y_t - \tilde C_t - (\delta+g)\,k_t,
+\qquad k_0 = \frac{K_0}{A_0}.
+$$
+
+\paragraph{Capital-owner wealth dynamics in efficiency units (to be closed by optimal policy).}
+With unit capital price and no adjustment costs, per-capital-owner wealth equals installed capital holdings. The after-tax idiosyncratic return on wealth has volatility $\sigma$ and is literally taxed at rate $\tau_k$. Hence, in regime $s$, the per-capital-owner wealth dynamics are
+$$
+dW_t = \Big((1-\tau_k)r_t\,W_t - c^K_t\Big)\,dt
++ (1-\tau_k)\sigma W_t\,dB_t,
+$$
+where $B_t$ is idiosyncratic and washes out in aggregates.
+In efficiency units, since $A_t$ is deterministic,
+$$
+d\tilde W_t
+= \Big(\big((1-\tau_k)r_t-g\big)\tilde W_t - \tilde c^K_t\Big)\,dt
++ (1-\tau_k)\sigma \tilde W_t\,dB_t,
+\qquad \tilde W_t = \frac{k_t}{1-\chi}.
+$$
+
+At this stage, the equilibrium mapping is closed except for the capital-owner policy $\tilde c^K_t$ (equivalently the policy function in each regime). The next step is to characterise $\tilde c^K$ via the time-homogeneous HJBs in efficiency units, using a state-dependent investment-opportunities object, and then pin down the unique stable transition path by shooting.
+
+\subsection{The investment-opportunities object and a time-homogeneous ODE system}
+\label{sec:inv_opp_ode}
+
+\begin{assumption}[Impatience / finite value along balanced growth]
+\label{ass:impatience}
+In the balanced-growth regime, (detrended) consumption grows at rate $g$. We assume
+$$
+\rho > (1-\gamma)\,g.
+$$
+\end{assumption}
+
+\paragraph{Effective discounting in efficiency units.}
+Labour-augmenting productivity is deterministic, $A_t = A_0 e^{gt}$, and preferences are CRRA. Writing $c_t = A_t \tilde c_t$, we have
+$$
+e^{-\rho t}\,\frac{c_t^{1-\gamma}}{1-\gamma}
+= A_0^{1-\gamma}\,e^{-(\rho-(1-\gamma)g)t}\,\frac{\tilde c_t^{1-\gamma}}{1-\gamma}.
+$$
+Up to the constant factor $A_0^{1-\gamma}$ (which can be absorbed into the value function),
+the detrended control problem is discounted at the effective rate
+$$
+\tilde\rho := \rho - (1-\gamma)g.
+$$
+Assumption~\ref{ass:impatience} implies $\tilde\rho>0$.
+
+\paragraph{State-dependent capital-income taxation.}
+Replace the constant capital-income tax rate by a state-dependent schedule
+$$
+\tau_k(\cdot):\mathbb{R}_+\to[0,1),
+$$
+where $\tau_k(k)$ is evaluated at the current detrended aggregate capital stock $k$.
+
+\paragraph{Time-homogeneous representation in efficiency units.}
+Work in efficiency units and treat the detrended aggregate state $k$ and the regime $s\in\{0,1\}$ as the relevant state variables.
+Conditional on $s$, factor prices and after-tax return opportunities are functions of $(k,s)$ only.
+The Poisson event switches the regime (and hence the rental-rate schedule), but physical capital is continuous at arrival, so the state $k$ is continuous at the switch.
+
+\paragraph{Definition (investment opportunities object as a consumption--wealth ratio).}
+For each regime $s\in\{0,1\}$, define
+$$
+\omega_s:\mathbb{R}_+\to\mathbb{R}_+,
+$$
+where $\omega_s(k)$ is the capital owner's optimal consumption--wealth ratio in efficiency units when the detrended state is $k$ and the regime is $s$:
+$$
+\tilde c^{K,s}(\tilde W,k) = \omega_s(k)\,\tilde W.
+$$
+
+\paragraph{Homothetic value function and the transformation to $\omega_s(k)$.}
+Let the stationary (time-homogeneous) value function in regime $s$ be
+$$
+V^s(\tilde W,k)=\frac{\tilde W^{1-\gamma}}{1-\gamma}\,\Psi_s(k),
+\qquad \Psi_s(k)>0.
+$$
+Then
+$$
+V^s_{\tilde W}(\tilde W,k)=\tilde W^{-\gamma}\Psi_s(k).
+$$
+With CRRA flow utility $u(c)=c^{1-\gamma}/(1-\gamma)$, the FOC $u'(c)=V_{\tilde W}$ implies
+$$
+(\tilde c^{K,s})^{-\gamma}=\tilde W^{-\gamma}\Psi_s(k)
+\qquad\Rightarrow\qquad
+\tilde c^{K,s}(\tilde W,k)=\tilde W\,\Psi_s(k)^{-1/\gamma}.
+$$
+Therefore,
+$$
+\omega_s(k)=\Psi_s(k)^{-1/\gamma},
+\qquad\text{equivalently}\qquad
+\Psi_s(k)=\omega_s(k)^{-\gamma}.
+$$
+
+\paragraph{Prices and net returns as functions of $(k,s)$.}
+Recall
+$$
+\tilde Y_s(k)=\Phi(I^s)\,k^{I^s},
+\qquad
+R_s(k)=I^s\,\Phi(I^s)\,k^{I^s-1},
+\qquad
+r_s(k)=R_s(k)-\delta,
+\qquad
+\tilde w_s(k)=(1-I^s)\tilde Y_s(k).
+$$
+Aggregate worker consumption in efficiency units is
+$$
+\tilde C^W_s(k)=\tilde w_s(k)+\tau_k(k)\,r_s(k)\,k.
+$$
+
+\paragraph{Law of motion for $k$ given $\omega_s$.}
+Aggregate capital-owner consumption in efficiency units is $\tilde C^{K,s}(k)=\omega_s(k)\,k$, so total consumption is
+$$
+\tilde C_s(k)=\tilde C^W_s(k)+\tilde C^{K,s}(k)
+=\tilde w_s(k)+\tau_k(k)\,r_s(k)\,k+\omega_s(k)\,k.
+$$
+The detrended aggregate state evolves as
+$$
+\dot k
+=\tilde Y_s(k)-\tilde C_s(k)-(\delta+g)k
+=(1-\tau_k(k))\,I^s\,\Phi(I^s)\,k^{I^s}
+-\Big(g+(1-\tau_k(k))\delta+\omega_s(k)\Big)\,k.
+$$
+Denote the right-hand side by $\mu^k_s(k,\omega_s(k))$.
+
+\paragraph{Capital-owner wealth dynamics (efficiency units).}
+The after-tax idiosyncratic return on wealth has volatility $\sigma$ and is literally taxed at rate $\tau_k(k)$.
+In regime $s$,
+$$
+d\tilde W
+=\Big(\big((1-\tau_k(k))r_s(k)-g\big)\tilde W-\tilde c^{K,s}\Big)\,dt
++(1-\tau_k(k))\sigma \tilde W\,dB,
+$$
+where $B$ is idiosyncratic and washes out in aggregates. Under the policy rule, $\tilde c^{K,s}=\omega_s(k)\tilde W$.
+
+\paragraph{HJB reduction and the ODE for $\omega_s$ along equilibrium paths.}
+In the stationary representation, the detrended HJB uses the effective discount rate $\tilde\rho$ and includes the additional drift term $V^s_k(\tilde W,k)\,\dot k$ to reflect the evolution of the aggregate state $k$ (which the capital owner takes as given).
+Substituting the homothetic form for $V^s$ and the optimal policy $\tilde c^{K,s}=\omega_s(k)\tilde W$ into the HJB and using $\Psi_s(k)=\omega_s(k)^{-\gamma}$ yields the following implication along any equilibrium path in regime $s$:
+$$
+\frac{d}{dt}\log \omega_s(k_t)
+=
+\omega_s(k_t)
+-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_k(k_t))r_s(k_t)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_k(k_t))^2\sigma^2
+\;+\;\mathbf{1}\{s=0\}\,\frac{\lambda}{\gamma}
+\left(
+\left(\frac{\omega_0(k_t)}{\omega_1(k_t)}\right)^{\gamma}
+-1
+\right).
+$$
+The last term is present only in the pre-automation regime and couples the pre object $\omega_0(\cdot)$ to the post object $\omega_1(\cdot)$ evaluated at the same detrended state (since $k$ is continuous at the arrival).
+
+\paragraph{Autonomous post-automation system.}
+In regime $s=1$ (no further arrivals), the time-homogeneous equilibrium dynamics for $(k_t,\omega_t)$ are
+$$
+\dot k_t
+=(1-\tau_k(k_t))\,I^1\,\Phi(I^1)\,k_t^{I^1}
+-\Big(g+(1-\tau_k(k_t))\delta+\omega_t\Big)\,k_t,
+$$
+$$
+\frac{d}{dt}\log \omega_t
+=
+\omega_t
+-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_k(k_t))r_1(k_t)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_k(k_t))^2\sigma^2.
+$$
+
+\paragraph{Autonomous pre-automation system with continuation.}
+In regime $s=0$, the time-homogeneous equilibrium dynamics satisfy
+$$
+\dot k_t
+=(1-\tau_k(k_t))\,I^0\,\Phi(I^0)\,k_t^{I^0}
+-\Big(g+(1-\tau_k(k_t))\delta+\omega_t\Big)\,k_t,
+$$
+$$
+\frac{d}{dt}\log \omega_t
+=
+\omega_t
+-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_k(k_t))r_0(k_t)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_k(k_t))^2\sigma^2
++\frac{\lambda}{\gamma}\left(
+\left(\frac{\omega_t}{\omega_1(k_t)}\right)^{\gamma}-1
+\right),
+$$
+where $\omega_1(\cdot)$ is the post-automation consumption--wealth ratio evaluated at the same detrended state $k_t$.
+
+\paragraph{Steady states / balanced growth in efficiency units.}
+A stationary point in regime $s$ is a pair $(k^\ast_s,\omega^\ast_s)$ such that $\dot k=0$ and $d(\log\omega)/dt=0$ under the corresponding regime system. These stationary points are used to select the stable transition paths (via shooting) in the next section.
+
+
+\subsection{Post-automation fixed point in efficiency units with state-dependent taxes}
+\label{sec:post_fixed_point}
+
+In regime $s=1$, a steady state in efficiency units is a pair $(k_1^\ast,\omega_1^\ast)$ such that
+$$
+\dot k = 0
+\qquad\text{and}\qquad
+\frac{d}{dt}\log \omega = 0.
+$$
+Throughout this section, write
+$$
+\tau_1^\ast := \tau_k(k_1^\ast),
+\qquad
+R_1(k)=I^1\Phi(I^1)k^{I^1-1},
+\qquad
+r_1(k)=R_1(k)-\delta,
+\qquad
+\tilde\rho := \rho-(1-\gamma)g.
+$$
+
+\paragraph{Steady-state capital accumulation.}
+The condition $\dot k=0$ in regime $1$ implies
+$$
+0=(1-\tau_k(k_1^\ast))\,I^1\Phi(I^1)(k_1^\ast)^{I^1}
+-\Big(g+(1-\tau_k(k_1^\ast))\delta+\omega_1^\ast\Big)k_1^\ast,
+$$
+equivalently,
+$$
+(1-\tau_1^\ast)\,R_1(k_1^\ast)=g+(1-\tau_1^\ast)\delta+\omega_1^\ast.
+\tag{SS-k}
+\label{eq:SS_k_post_sd_tax}
+$$
+Rearranging,
+$$
+\omega_1^\ast=(1-\tau_1^\ast)\,r_1(k_1^\ast)-g.
+\tag{A}
+\label{eq:omega_ss_identity_sd_tax}
+$$
+
+\paragraph{Steady-state condition for the consumption--wealth ratio.}
+The post-automation condition $\tfrac{d}{dt}\log\omega=0$ implies
+$$
+0=\omega_1^\ast
+-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_1^\ast)\,r_1(k_1^\ast)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_1^\ast)^2\sigma^2.
+\tag{SS-$\omega$}
+\label{eq:SS_omega_post_sd_tax}
+$$
+
+\paragraph{Corrected required return and the steady consumption--wealth ratio.}
+Substituting \eqref{eq:omega_ss_identity_sd_tax} into \eqref{eq:SS_omega_post_sd_tax} yields the corrected steady-state required (after-tax) net return:
+$$
+(1-\tau_1^\ast)\,r_1(k_1^\ast)
+=\rho+\gamma g-\frac{\gamma(\gamma-1)}{2}(1-\tau_1^\ast)^2\sigma^2.
+\tag{B}
+\label{eq:req_return_post_sd_tax}
+$$
+Equivalently, using $\tilde\rho=\rho-(1-\gamma)g$, the steady consumption--wealth ratio is
+$$
+\omega_1^\ast
+=(1-\tau_1^\ast)\,r_1(k_1^\ast)-g
+=\tilde\rho-\frac{\gamma(\gamma-1)}{2}(1-\tau_1^\ast)^2\sigma^2.
+\tag{C}
+\label{eq:omega_ss_post_sd_tax}
+$$
+
+\paragraph{Implicit solution for $k_1^\ast$.}
+Because $\tau_k(\cdot)$ depends on the state, \eqref{eq:req_return_post_sd_tax} is, in general, an implicit equation for $k_1^\ast$:
+$$
+(1-\tau_k(k_1^\ast))\Big(I^1\Phi(I^1)(k_1^\ast)^{I^1-1}-\delta\Big)
+=\rho+\gamma g-\frac{\gamma(\gamma-1)}{2}(1-\tau_k(k_1^\ast))^2\sigma^2.
+\tag{D}
+\label{eq:k_ss_implicit_sd_tax}
+$$
+Given a solution $k_1^\ast$ to \eqref{eq:k_ss_implicit_sd_tax}, the corresponding $\omega_1^\ast$ is pinned down by \eqref{eq:omega_ss_post_sd_tax}.
+
+\paragraph{Existence and uniqueness.}
+A sufficient set of conditions for existence and uniqueness of the post-automation fixed point is:
+\begin{enumerate}
+\item $I^1\in(0,1)$, so $R_1(k)=I^1\Phi(I^1)k^{I^1-1}$ is strictly decreasing on $(0,\infty)$, with $R_1(k)\to\infty$ as $k\downarrow 0$ and $R_1(k)\to 0$ as $k\uparrow\infty$.
+\item $\tau_k(\cdot)$ is continuous and maps $\mathbb{R}_+$ into $[0,1)$.
+\item The fixed-point equation \eqref{eq:k_ss_implicit_sd_tax} has a unique solution. A convenient sufficient condition is that the function
+$$
+L(k):=(1-\tau_k(k))\,r_1(k)+\frac{\gamma(\gamma-1)}{2}(1-\tau_k(k))^2\sigma^2
+$$
+is strictly decreasing on $(0,\infty)$ and satisfies $\lim_{k\downarrow 0}L(k)=+\infty$ and $\lim_{k\uparrow\infty}L(k)<\rho+\gamma g$.
+In particular, strict monotonicity of $L$ holds under standard progressive schemes in which $\tau_k(k)$ is weakly increasing and not too steep.
+\item $\omega_1^\ast>0$, equivalently
+$$
+\tilde\rho>\frac{\gamma(\gamma-1)}{2}(1-\tau_1^\ast)^2\sigma^2.
+$$
+\item Assumption~\ref{ass:impatience} ($\tilde\rho>0$) to ensure the detrended value function is finite.
+\end{enumerate}
+Under these conditions, the post-automation steady state $(k_1^\ast,\omega_1^\ast)$ is uniquely determined by \eqref{eq:k_ss_implicit_sd_tax} and \eqref{eq:omega_ss_post_sd_tax}.
+
+\subsection{Numerical solution strategy: global construction of $\omega_1(\cdot)$ and $\omega_0(\cdot)$}\label{sec:numerics}
+
+This section describes a numerically robust procedure to solve the time-homogeneous
+ODE systems derived in Sections \ref{sec:investment_opps}--\ref{sec:post_fp} and to
+construct the policy objects $\omega_1(k)$ (post) and $\omega_0(k)$ (pre) on a
+\emph{chosen domain} of detrended capital. The key requirement for the pre-automation
+problem is that the continuation term evaluates $\omega_1(k)$ at any $k$ that may be
+reached (or iterated over) in regime $0$. A single post transition path from one initial
+condition generally does not define $\omega_1(k)$ on a sufficiently large domain, and
+the mapping $k \mapsto \omega$ must be constructed as a stable manifold (a graph) rather
+than by projecting a time-series that may be non-monotone in $k$.
+
+\paragraph{State, regimes, and ODEs.}
+Let $x=(k,\omega)$ where $k$ is aggregate capital in efficiency units and $\omega$ is the
+capital-owner consumption--wealth ratio in efficiency units. The effective discount rate
+is $\tilde\rho := \rho-(1-\gamma)g>0$. The state-dependent capital-income tax is
+$\tau_k:\mathbb{R}_+\to[0,1)$.
+
+For each regime $s\in\{0,1\}$ define
+\begin{align}
+\tilde Y_s(k) &= \Phi(I_s)\,k^{I_s},&
+R_s(k) &= I_s\Phi(I_s)\,k^{I_s-1},&
+r_s(k) &= R_s(k)-\delta,
+\end{align}
+with $\Phi(I):=I^{-I}(1-I)^{-(1-I)}$, $I_0=I_0$, $I_1=I_0+\Delta I$.
+
+The time-homogeneous systems are written as
+\begin{align}
+\dot k &= f^k_s(k,\omega), \label{eq:ode_k_general}\\
+\frac{d}{dt}\log\omega &= f^\omega_s(k,\omega), \qquad\text{equivalently}\qquad \dot\omega=\omega\,f^\omega_s(k,\omega). \label{eq:ode_omega_general}
+\end{align}
+The $k$-equation is (both regimes)
+\begin{align}
+f^k_s(k,\omega)
+&=(1-\tau_k(k))\,I_s\Phi(I_s)\,k^{I_s}
+-\Big(g+(1-\tau_k(k))\delta+\omega\Big)\,k. \label{eq:fks_general}
+\end{align}
+The post-automation $\omega$-equation is
+\begin{align}
+f^\omega_1(k,\omega)
+&= \omega-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_k(k))\,r_1(k)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_k(k))^2\sigma^2. \label{eq:fw1_general}
+\end{align}
+The pre-automation $\omega$-equation includes continuation:
+\begin{align}
+f^\omega_0(k,\omega)
+&= \omega-\frac{\tilde\rho}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_k(k))\,r_0(k)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_k(k))^2\sigma^2
++\frac{\lambda}{\gamma}\left[\left(\frac{\omega}{\omega_1(k)}\right)^\gamma-1\right]. \label{eq:fw0_general}
+\end{align}
+
+\subsubsection{(A) Choice of domain and steady states}\label{sec:numerics_domain}
+
+\paragraph{Domain choice.}
+Fix a compact interval $[k_{\min},k_{\max}]\subset(0,\infty)$ on which the policy
+functions will be constructed. The domain must be wide enough to cover:
+(i) all $k$ values visited by the regime-$0$ transition path from the initial condition,
+and (ii) all $k$ values evaluated during root-finding for $(k_0^\ast,\omega_0^\ast)$.
+A practical choice is to set $k_{\min}$ small and $k_{\max}$ large with buffers, and to
+expand the interval if diagnostic checks detect boundary hits.
+
+\paragraph{Post-automation fixed point.}
+Compute the unique post fixed point $(k_1^\ast,\omega_1^\ast)$ solving
+\begin{align}
+f^k_1(k_1^\ast,\omega_1^\ast)=0,\qquad f^\omega_1(k_1^\ast,\omega_1^\ast)=0.
+\end{align}
+(Section \ref{sec:post_fp} provides the scalar fixed-point equation for $k_1^\ast$ and
+the implied $\omega_1^\ast$.)
+
+\paragraph{Pre-automation fixed point (with continuation).}
+Given a constructed $\omega_1(\cdot)$ on $[k_{\min},k_{\max}]$, compute
+$(k_0^\ast,\omega_0^\ast)$ as follows. First eliminate $\omega$ from $f^k_0=0$:
+\begin{align}
+0=f^k_0(k,\omega)
+\quad\Longleftrightarrow\quad
+\omega = (1-\tau_k(k))\,r_0(k)-g. \label{eq:omega_elim_from_fk0}
+\end{align}
+Define the scalar residual
+\begin{align}
+G_0(k) := f^\omega_0\!\Big(k,\ (1-\tau_k(k))\,r_0(k)-g\Big), \label{eq:G0_def}
+\end{align}
+where $f^\omega_0$ uses the post object $\omega_1(k)$. Solve $G_0(k)=0$ for $k_0^\ast$
+(on a bracket contained in $[k_{\min},k_{\max}]$), and then set
+$\omega_0^\ast=(1-\tau_k(k_0^\ast))\,r_0(k_0^\ast)-g$ from \eqref{eq:omega_elim_from_fk0}.
+
+\subsubsection{(B) Constructing $\omega_1(k)$ and $\omega_0(k)$ as stable manifolds}\label{sec:numerics_manifold}
+
+\paragraph{Why a manifold method.}
+The pre-automation continuation term requires evaluation of $\omega_1(k)$ at any
+$k$ in the relevant regime-$0$ state space. Constructing $\omega_1(\cdot)$ only from a
+single time path $(k(t),\omega(t))$ may (i) fail to cover the required $k$-domain, and
+(ii) fail to define a function if $k(t)$ is not strictly monotone. We therefore construct
+$\omega_s(\cdot)$ directly as a stable manifold (graph) over $k$.
+
+\paragraph{Time-elimination (graph ODE).}
+On any region where $f^k_s(k,\omega)\neq 0$, the stable manifold can be represented as
+a function $\omega=\omega_s(k)$ satisfying the first-order ODE
+\begin{align}
+\frac{d}{dk}\log\omega_s(k)
+=\frac{f^\omega_s\!\big(k,\omega_s(k)\big)}{f^k_s\!\big(k,\omega_s(k)\big)}. \label{eq:manifold_ode_logomega}
+\end{align}
+Equivalently,
+\begin{align}
+\frac{d}{dk}\omega_s(k)
+=\omega_s(k)\,\frac{f^\omega_s\!\big(k,\omega_s(k)\big)}{f^k_s\!\big(k,\omega_s(k)\big)}. \label{eq:manifold_ode_omega}
+\end{align}
+In regime $s=1$, $f^\omega_1$ is given by \eqref{eq:fw1_general}. In regime $s=0$,
+$f^\omega_0$ is given by \eqref{eq:fw0_general} and uses the already-constructed
+$\omega_1(\cdot)$.
+
+\paragraph{Initialisation near the fixed point.}
+At the fixed point $(k_s^\ast,\omega_s^\ast)$ the right-hand side of
+\eqref{eq:manifold_ode_logomega} is $0/0$. To initialise, compute the Jacobian of the
+time system \eqref{eq:ode_k_general}--\eqref{eq:ode_omega_general} at the fixed point and
+obtain the (unique) stable eigenvector $v_s=(v_k,v_\omega)$ associated with the negative
+eigenvalue. Start at a small perturbation along the stable direction, e.g.
+\begin{align}
+k_{\mathrm{start}} = k_s^\ast + \varepsilon v_k,\qquad
+\omega_{\mathrm{start}} = \omega_s^\ast + \varepsilon v_\omega,
+\end{align}
+with $\varepsilon>0$ small, and then integrate the manifold ODE outward in $k$.
+
+\paragraph{Global coverage on $[k_{\min},k_{\max}]$.}
+Integrate the manifold ODE in two directions:
+\begin{itemize}
+\item from $k_{\mathrm{start}}$ down to $k_{\min}$ to obtain $\omega_s(k)$ on
+$[k_{\min},k_s^\ast]$,
+\item from $k_{\mathrm{start}}$ up to $k_{\max}$ to obtain $\omega_s(k)$ on
+$[k_s^\ast,k_{\max}]$.
+\end{itemize}
+If $f^k_s$ becomes numerically close to $0$ along the manifold (so that
+\eqref{eq:manifold_ode_logomega} becomes ill-conditioned), switch locally to the inverse
+parameterisation $dk/d\log\omega = f^k_s/f^\omega_s$ (or parameterise the curve by arclength).
+This ensures the graph construction does not fail at turning points.
+
+\paragraph{Positivity and interpolation.}
+Store $\ell_s(k):=\log\omega_s(k)$ on the grid and set $\omega_s(k)=\exp(\ell_s(k))$.
+Interpolate $\ell_s$ (not $\omega_s$) to guarantee positivity and to avoid numerical
+instability in the continuation term of \eqref{eq:fw0_general}.
+
+\subsubsection{(C) Shooting for time paths (optional) and full pseudocode}\label{sec:numerics_pseudocode}
+
+Once $\omega_s(k)$ is available on $[k_{\min},k_{\max}]$, the \emph{time paths} conditional
+on remaining in regime $s$ can be obtained by integrating the scalar ODE
+\begin{align}
+\dot k_t = f^k_s\!\big(k_t,\omega_s(k_t)\big),\qquad k(0)=k_0, \label{eq:reduced_time_path}
+\end{align}
+and then setting $\omega(t)=\omega_s(k(t))$. This step is not required to define the
+policy functions, but is useful for plotting and diagnostics.
+
+\paragraph{Pseudocode.}
+\begin{enumerate}
+\item \textbf{Choose domain.} Pick $[k_{\min},k_{\max}]$ and a grid $\{k_i\}_{i=1}^N$.
+Choose tolerances $\varepsilon_{ss}$ (steady-state accuracy) and $\varepsilon_{\mathrm{pos}}$
+(positivity floor for $\omega$), and a small eigenvector step size $\varepsilon$.
+
+\item \textbf{Post fixed point.} Solve for $(k_1^\ast,\omega_1^\ast)$ using the scalar fixed-point
+equation in Section \ref{sec:post_fp}. Check $\omega_1^\ast>0$.
+
+\item \textbf{Construct $\omega_1(k)$ on $[k_{\min},k_{\max}]$.}
+\begin{enumerate}
+\item Compute the Jacobian of the time system at $(k_1^\ast,\omega_1^\ast)$ and its stable eigenvector $v_1$.
+\item Initialise $(k_{\mathrm{start}},\omega_{\mathrm{start}})$ by a small perturbation along $v_1$.
+\item Integrate the manifold ODE \eqref{eq:manifold_ode_logomega} down to $k_{\min}$ and up to $k_{\max}$,
+with a fallback parameterisation if $|f^k_1|$ becomes too small.
+\item Store $\ell_1(k)=\log\omega_1(k)$ on the grid and interpolate $\ell_1$.
+\item Enforce $\omega_1(k)\ge \varepsilon_{\mathrm{pos}}$ (if violated, enlarge the domain or refine the grid).
+\end{enumerate}
+
+\item \textbf{Pre fixed point.} Define $G_0(k)$ by \eqref{eq:G0_def} using the interpolant for $\omega_1(k)$.
+Solve $G_0(k)=0$ for $k_0^\ast$ on a bracket contained in $[k_{\min},k_{\max}]$, and set
+$\omega_0^\ast=(1-\tau_k(k_0^\ast))r_0(k_0^\ast)-g$ by \eqref{eq:omega_elim_from_fk0}.
+Check $\omega_0^\ast>0$.
+
+\item \textbf{Construct $\omega_0(k)$ on $[k_{\min},k_{\max}]$.}
+\begin{enumerate}
+\item Compute the Jacobian of the time system at $(k_0^\ast,\omega_0^\ast)$ (with continuation term evaluated using $\omega_1$)
+and its stable eigenvector $v_0$.
+\item Initialise near $(k_0^\ast,\omega_0^\ast)$ along $v_0$ and integrate the manifold ODE
+\eqref{eq:manifold_ode_logomega} for $s=0$ outward over $[k_{\min},k_{\max}]$, using the interpolant for $\omega_1(k)$.
+\item Store $\ell_0(k)=\log\omega_0(k)$ on the grid and interpolate $\ell_0$.
+\end{enumerate}
+
+\item \textbf{(Optional) Recover conditional time paths.}
+Given $k(0)=k_0$, integrate \eqref{eq:reduced_time_path} for $s=1$ (post) or $s=0$ (pre),
+and set $\omega(t)=\omega_s(k(t))$. Verify that the path remains inside $[k_{\min},k_{\max}]$;
+if not, enlarge the domain and recompute $\omega_s(\cdot)$.
+\end{enumerate}
+
+
+\section{Ramsey problem: optimal regime-dependent capital-income taxation}
+
+This section defines a Ramsey planner problem for the economy above, where the planner commits at $t=0$
+to a regime-dependent but time-homogeneous capital-income tax. The key novelty relative to the baseline
+presentation is that we evaluate capital-owner welfare over a continuum of capital owners, using a closed
+moment of their wealth distribution.
+
+\subsection{Automation regime and admissible tax rules}
+
+Automation arrives at the (random) time $\tau$ with constant hazard $\lambda>0$, and the regime indicator is
+\[
+s_t := \mathbf{1}\{t\ge \tau\}\in\{0,1\},
+\]
+so $s_t=0$ denotes the pre-automation regime and $s_t=1$ the post-automation regime.
+
+The Ramsey planner commits at $t=0$ to a pair of constant regime-dependent tax rates
+\[
+\tau^k := (\tau_{k,0},\tau_{k,1})\in[0,1)^2,
+\qquad
+\tau_k(s) := \tau_{k,s}.
+\]
+Taxes are not allowed to vary with the capital stock $k$.
+
+\medskip
+\noindent
+\textbf{Admissibility (frontier adoption).}
+Throughout we maintain frontier adoption as in the main text. In the Ramsey problem we restrict attention to
+tax vectors $\tau^k$ such that the induced equilibrium factor prices satisfy the frontier-adoption inequalities
+(equivalently, the cost-based adoption cutoff weakly exceeds the feasible frontier). This is a maintained-consistency
+check rather than an additional policy instrument.
+
+\subsection{Equilibrium objects in efficiency units}
+
+Let $A_t$ denote labour-augmenting productivity, assumed deterministic with $\dot A_t=gA_t$. Define efficiency-unit
+(detrended) aggregates by
+\[
+k_t := \frac{K_t}{A_t},
+\qquad
+\tilde Y_t := \frac{Y_t}{A_t},
+\qquad
+\tilde C_t := \frac{C_t}{A_t}.
+\]
+With frontier adoption, the automation frontier is regime-specific and constant within each regime:
+\[
+I_t = I_{s_t},
+\qquad
+I_0\in(0,1),\ I_1\in(0,1),\ I_1>I_0.
+\]
+Output in efficiency units is
+\[
+\tilde Y_t = \Phi(I_{s_t})\, k_t^{I_{s_t}},
+\qquad
+\Phi(I):=I^{-I}(1-I)^{-(1-I)}.
+\]
+The wage per unit of raw labour in efficiency units is
+\[
+\tilde w_t := \frac{w_t}{A_t} = (1-I_{s_t})\,\tilde Y_t,
+\]
+and the gross rental rate of capital and net return on wealth are
+\[
+R_t = \frac{I_{s_t}\tilde Y_t}{k_t} = I_{s_t}\Phi(I_{s_t})\,k_t^{I_{s_t}-1},
+\qquad
+r_t := R_t-\delta.
+\]
+
+\subsection{Government budget and worker consumption}
+
+The government levies a proportional tax on net capital income at the regime-dependent rate $\tau_{k,s}$ and rebates
+all revenue lump-sum to workers each instant; the government does not issue debt or hold assets. With a mass
+$\chi\in(0,1)$ of workers, aggregate tax revenue in efficiency units is
+\[
+\tilde T_t = \tau_{k,s_t}\, r_t\, k_t,
+\]
+and the transfer per worker in efficiency units is
+\[
+\tilde T^W_t = \frac{1}{\chi}\tilde T_t = \frac{\tau_{k,s_t}}{\chi}\, r_t\, k_t.
+\]
+Workers are hand-to-mouth. Per-worker consumption in efficiency units is therefore
+\[
+\tilde c^W_t = \frac{\tilde w_t}{\chi} + \tilde T^W_t
+= \frac{1}{\chi}\Big(\tilde w_t + \tau_{k,s_t} r_t k_t\Big).
+\]
+
+\subsection{Capital owners: continuum, wealth dynamics, and aggregation}
+
+A mass $1-\chi$ are capital owners indexed by $i\in[0,1-\chi]$. Let $W_t(i)$ denote wealth of capital owner $i$ in levels,
+and define detrended wealth $\tilde W_t(i):=W_t(i)/A_t$. Capital owners supply no labour income.
+
+\medskip
+\noindent
+\textbf{Idiosyncratic risk and aggregation.}
+Each capital owner faces an idiosyncratic Brownian shock $B_t(i)$, independent across $i$. We maintain the modelling
+approximation that this risk washes out in the aggregate, so aggregate quantities and factor prices are deterministic
+conditional on the regime path. Taxes are levied on realised capital income, including the idiosyncratic component,
+so the after-tax diffusion term is scaled by $(1-\tau_{k,s_t})$.
+
+\medskip
+\noindent
+\textbf{Pre-tax return moments.}
+Throughout, $(r_s(k),\sigma_s(k))$ denote the pre-tax drift and volatility of the return on wealth in regime $s$;
+the capital-income tax scales both the drift and diffusion by $(1-\tau_{k,s})$.
+
+\medskip
+\noindent
+\textbf{Individual wealth SDE (levels).}
+In regime $s_t$, capital owner $i$ satisfies
+\[
+dW_t(i) = \Big((1-\tau_{k,s_t})\, r_{s_t}(k_t)\, W_t(i) - c^K_t(i)\Big)\,dt
++ (1-\tau_{k,s_t})\,\sigma_{s_t}(k_t)\,W_t(i)\, dB_t(i),
+\qquad
+W_t(i)\ge 0.
+\]
+In efficiency units this becomes
+\[
+d\tilde W_t(i) =
+\Big(\big((1-\tau_{k,s_t})\, r_{s_t}(k_t)-g\big)\tilde W_t(i) - \tilde c^K_t(i)\Big)\,dt
++ (1-\tau_{k,s_t})\,\sigma_{s_t}(k_t)\,\tilde W_t(i)\, dB_t(i),
+\qquad
+\tilde W_t(i)\ge 0,
+\]
+where $\tilde c^K_t(i):=c^K_t(i)/A_t$.
+
+\medskip
+\noindent
+\textbf{Aggregation identity (continuum).}
+Aggregate detrended capital equals the cross-sectional mean of detrended wealth:
+\[
+k_t = (1-\chi)\,\mathbb E[\tilde W_t(i)].
+\]
+
+\subsection{Capital-owner preferences, homothetic policy, and the $\omega$ object}
+
+Capital owners have CRRA utility with coefficient $\gamma>0$ and discount rate $\rho>0$:
+\[
+\mathbb E\Big[\int_0^\infty e^{-\rho t}\,\frac{(c^K_t(i))^{1-\gamma}}{1-\gamma}\,dt\Big].
+\]
+Workers are also assigned CRRA utility with the same coefficient $\gamma$ for consistency with balanced-growth detrending:
+\[
+\mathbb E\Big[\int_0^\infty e^{-\rho t}\,\frac{(c^W_t)^{1-\gamma}}{1-\gamma}\,dt\Big].
+\]
+(If $\gamma=1$, replace $\frac{c^{1-\gamma}}{1-\gamma}$ by $\log c$ throughout; in efficiency units, detrending then introduces
+an additive growth term.)
+
+Under the maintained Merton/homothetic structure (linear wealth dynamics in wealth, no labour income for capital owners),
+optimal capital-owner consumption is proportional to wealth:
+\[
+\tilde c^K_t(i) = \omega_{s_t}(k_t;\tau^k)\,\tilde W_t(i),
+\]
+where $\omega_s(\cdot;\tau^k)$ is the regime-$s$ consumption--wealth ratio in efficiency units.
+
+\medskip
+\noindent
+\textbf{Effective discounting.}
+For $\gamma\neq 1$, define the growth-adjusted discount rate
+\[
+\rho^e := \rho-(1-\gamma)g,
+\]
+and assume $\rho^e>0$.
+
+\medskip
+\noindent
+\textbf{Time-homogeneous reduced form for $\omega$.}
+In each regime, along any equilibrium path the consumption--wealth ratio satisfies
+\[
+\frac{d}{dt}\log \omega_t
+=
+\omega_t
+-\frac{\rho^e}{\gamma}
++\frac{1-\gamma}{\gamma}\Big((1-\tau_{k,s_t})\,r_{s_t}(k_t)-g\Big)
+-\frac{1-\gamma}{2}(1-\tau_{k,s_t})^2\,\sigma_{s_t}(k_t)^2
++\mathbf{1}\{s_t=0\}\,\frac{\lambda}{\gamma}
+\Bigg[\Big(\frac{\omega_t}{\omega_1(k_t;\tau^k)}\Big)^\gamma-1\Bigg],
+\]
+with $\omega_t=\omega_{s_t}(k_t;\tau^k)$ on equilibrium paths. The continuation term appears only in regime $s=0$
+because the post-automation regime has no further regime switches.
+
+\subsection{Closed dynamics for $(k_t,m_t)$ under moment welfare}
+
+Define the welfare-relevant moment of the capital-owner wealth distribution (in efficiency units) by
+\[
+m_t := \mathbb E\big[\tilde W_t(i)^{\,1-\gamma}\big].
+\]
+This moment is finite only if the distribution places sufficiently little mass near zero when $\gamma>1$; we therefore assume
+\[
+m_0<\infty,
+\qquad
+\tilde W_0(i)>0\ \text{a.s.},
+\qquad
+\text{and the induced wealth process preserves finiteness of } m_t.
+\]
+Because $\tilde c^K_t(i)=\omega_{s_t}(k_t;\tau^k)\tilde W_t(i)$ is homothetic and the opportunity set depends on $(k_t,s_t)$ but
+not on $i$, the dynamics of $(k_t,m_t)$ close.
+
+\medskip
+\noindent
+\textbf{Law of motion for $k_t$.}
+Goods market clearing implies
+\[
+\dot k_t = \tilde Y_t-\tilde C_t-(\delta+g)k_t,
+\qquad
+\tilde C_t = \chi \tilde c^W_t + (1-\chi)\mathbb E[\tilde c^K_t(i)].
+\]
+Using $\mathbb E[\tilde c^K_t(i)]=\omega_{s_t}(k_t;\tau^k)\mathbb E[\tilde W_t(i)]
+=\omega_{s_t}(k_t;\tau^k)\,k_t/(1-\chi)$ and $\tilde c^W_t=\chi^{-1}(\tilde w_t+\tau_{k,s_t}r_t k_t)$ yields the scalar ODE
+\[
+\dot k_t = \Big((1-\tau_{k,s_t})\,r_{s_t}(k_t)-g-\omega_{s_t}(k_t;\tau^k)\Big)\,k_t.
+\]
+
+\medskip
+\noindent
+\textbf{Law of motion for $m_t$.}
+Applying It\^{o}'s lemma to $\tilde W_t(i)^{1-\gamma}$ and taking cross-sectional expectations yields
+\[
+\dot m_t =
+\Bigg(
+(1-\gamma)\Big((1-\tau_{k,s_t})\,r_{s_t}(k_t)-g-\omega_{s_t}(k_t;\tau^k)\Big)
+-\frac{\gamma(1-\gamma)}{2}(1-\tau_{k,s_t})^2\,\sigma_{s_t}(k_t)^2
+\Bigg)m_t.
+\]
+
+\medskip
+\noindent
+\textbf{Determinism conditional on the regime.}
+Conditional on the regime path (i.e.\ between Poisson arrivals), $(k_t,m_t)$ evolve deterministically. Unconditionally at a
+calendar time $t$, $(k_t,m_t)$ are random because $s_t$ is random.
+
+\subsection{Planner objective in efficiency units}
+
+Let $u(c)=\frac{c^{1-\gamma}}{1-\gamma}$ (with $u(c)=\log c$ if $\gamma=1$). The utilitarian planner uses population weights
+$\chi$ for workers and $1-\chi$ for capital owners, and evaluates capital-owner welfare under idiosyncratic risk by averaging
+across the capital-owner continuum. Define the planner's welfare functional (levels) under a tax vector $\tau^k$ by
+\[
+\mathcal W(\tau^k)
+:=
+\mathbb E\Bigg[\int_0^\infty e^{-\rho t}\Big(\chi u(c^W_t)+(1-\chi)\mathbb E[u(c^K_t(i))]\Big)\,dt\Bigg].
+\]
+For $\gamma\neq 1$, writing $c_t=A_t\tilde c_t$ and $A_t=A_0e^{gt}$ implies the equivalent objective in efficiency units
+\[
+\mathcal W(\tau^k)
+=
+A_0^{1-\gamma}\,
+\mathbb E\Bigg[\int_0^\infty e^{-\rho^e t}\Big(\chi u(\tilde c^W_t)+(1-\chi)\mathbb E[u(\tilde c^K_t(i))]\Big)\,dt\Bigg].
+\]
+Under $\tilde c^K_t(i)=\omega_{s_t}(k_t;\tau^k)\tilde W_t(i)$ and the definition of $m_t$,
+\[
+\mathbb E[u(\tilde c^K_t(i))]
+=
+\frac{\omega_{s_t}(k_t;\tau^k)^{1-\gamma}}{1-\gamma}\,m_t.
+\]
+Hence the planner flow payoff (efficiency units) in regime $s$ can be written as a function of $(k,m)$:
+\[
+U_s(k,m;\tau^k)
+:=
+\chi\,\frac{\tilde c^W_s(k;\tau^k)^{1-\gamma}}{1-\gamma}
++
+(1-\chi)\,\frac{\omega_s(k;\tau^k)^{1-\gamma}}{1-\gamma}\,m,
+\]
+where
+\[
+\tilde c^W_s(k;\tau^k)
+=
+\frac{1}{\chi}\Big(\tilde w_s(k)+\tau_{k,s}r_s(k)\,k\Big),
+\qquad
+\tilde w_s(k)=(1-I_s)\Phi(I_s)k^{I_s}.
+\]
+
+\subsection{Planner value functions and the Ramsey problem}
+
+For a fixed tax vector $\tau^k$, define the planner's regime-dependent value functions in efficiency units by
+\[
+J_s(k,m;\tau^k)
+:=
+\mathbb E\Bigg[\int_0^\infty e^{-\rho^e t}\,U_{s_t}(k_t,m_t;\tau^k)\,dt\ \Big|\ s_0=s,\ k_0=k,\ m_0=m\Bigg],
+\qquad
+s\in\{0,1\},
+\]
+where $(k_t,m_t)$ follow the closed system above and are continuous at regime switches.
+
+These values satisfy the following linear HJB (evaluation) equations:
+\[
+\rho^e J_1(k,m;\tau^k)
+=
+U_1(k,m;\tau^k)
++\partial_k J_1(k,m;\tau^k)\,f_{k,1}(k,m;\tau^k)
++\partial_m J_1(k,m;\tau^k)\,f_{m,1}(k,m;\tau^k),
+\]
+\[
+\rho^e J_0(k,m;\tau^k)
+=
+U_0(k,m;\tau^k)
++\partial_k J_0(k,m;\tau^k)\,f_{k,0}(k,m;\tau^k)
++\partial_m J_0(k,m;\tau^k)\,f_{m,0}(k,m;\tau^k)
++\lambda\big(J_1(k,m;\tau^k)-J_0(k,m;\tau^k)\big),
+\]
+where $f_{k,s}$ and $f_{m,s}$ are the drifts from the closed $(k,m)$ system:
+\[
+f_{k,s}(k,m;\tau^k)
+=
+\Big((1-\tau_{k,s})\,r_s(k)-g-\omega_s(k;\tau^k)\Big)\,k,
+\]
+\[
+f_{m,s}(k,m;\tau^k)
+=
+\Bigg(
+(1-\gamma)\Big((1-\tau_{k,s})\,r_s(k)-g-\omega_s(k;\tau^k)\Big)
+-\frac{\gamma(1-\gamma)}{2}(1-\tau_{k,s})^2\,\sigma_s(k)^2
+\Bigg)m.
+\]
+A transversality condition equivalent to the infinite-horizon integral formulation is imposed.
+
+\medskip
+\noindent
+\textbf{Initial conditions.}
+The Ramsey problem starts from $(s_0,k_0,m_0)=(0,k_0,m_0)$ with
+\[
+k_0>0,
+\qquad
+m_0<\infty,
+\qquad
+k_0=(1-\chi)\mathbb E[\tilde W_0(i)].
+\]
+A convenient baseline normalisation is a degenerate initial distribution $\tilde W_0(i)\equiv k_0/(1-\chi)$, in which case
+$m_0=(k_0/(1-\chi))^{1-\gamma}$; more general calibrations can instead set $m_0$ directly.
+
+\medskip
+\noindent
+\textbf{Ramsey problem.}
+The planner chooses $(\tau_{k,0},\tau_{k,1})$ to maximise pre-automation welfare:
+\[
+(\tau^*_{k,0},\tau^*_{k,1})
+\in
+\arg\max_{(\tau_{k,0},\tau_{k,1})\in[0,1)^2}
+J_0(k_0,m_0;\tau^k),
+\]
+subject to: (i) the competitive-equilibrium mapping $\tau^k\mapsto \omega_s(\cdot;\tau^k)$ implied by the capital-owner problem
+(with Poisson continuation in regime $0$), (ii) the induced closed dynamics for $(k_t,m_t)$, and (iii) the frontier-adoption
+admissibility constraint. We defer numerical computation of $(\tau^*_{k,0},\tau^*_{k,1})$ and comparative statics to the numerical section.
+
+
+\tilde w_1(k_\tau)-\tilde w_0(k_\tau)
++\bar\tau\big(r_1(k_\tau)-r_0(k_\tau)\big)k_\tau
+=0.
+\label{eq:knife_edge_constant_tax}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Immediate from strict monotonicity of $u'$ and \eqref{eq:worker_cons_tau_pm}. Under $\tau_{k,0}=\tau_{k,1}=\bar\tau$, equality reduces to \eqref{eq:knife_edge_constant_tax}.
+\end{proof}
+
+\begin{lemma}[Automation need not reduce wages, even on impact]
+\label{lem:wage_impact_ambiguous}
+Fix any $k>0$. The impact wage comparison in efficiency units satisfies
+\begin{equation}
+\frac{\tilde w_1(k)}{\tilde w_0(k)}
+=
+\frac{1-I_1}{1-I_0}\cdot \frac{\Phi(I_1)}{\Phi(I_0)}\cdot k^{\,I_1-I_0}.
+\label{eq:wage_ratio}
+\end{equation}
+Hence $\tilde w_1(k)>\tilde w_0(k)$ if and only if
+\begin{equation}
+k
+>
+\left(
+\frac{1-I_0}{1-I_1}\cdot\frac{\Phi(I_0)}{\Phi(I_1)}
+\right)^{\!\frac{1}{I_1-I_0}}.
+\label{eq:wage_threshold}
+\end{equation}
+In particular, the sign of the impact wage change is generally ambiguous and depends on $(I_0,I_1)$, on $\Phi(\cdot)$, and on the realised state $k$ at arrival.
+\end{lemma}
+
+\begin{proof}
+Substitute $\tilde w_s(k)=(1-I_s)\Phi(I_s)k^{I_s}$ and rearrange.
+\end{proof}
+
+\begin{remark}[``Full'' (ex ante) effects vs.\ impact-at-fixed-state]
+\label{rem:full_effects_vs_impact}
+Proposition~\ref{prop:lambda_jump_at_tau} isolates the \emph{impact} effect at $\tau$ holding $(k_\tau,m_\tau)$ fixed. The \emph{full} effect of automation on MVPD from date $0$ also operates through the endogenous distribution of $(k_\tau,m_\tau)$ itself, because pre-automation policies and expectations influence accumulation prior to $\tau$. Thus, even if the impact inequality \eqref{eq:worker_income_jump_ineq} holds pointwise at a given $(k,m)$, the ex ante effect can differ once one accounts for how automation changes (or is anticipated to change) the path of $k$ and hence the wage and tax-base components of worker resources.
+\end{remark}
+
+% =========================
+% Section 8 (REPLACE ENTIRE SECTION)
+% =========================
+
+% ======================================================================
+% SECTION 8 (REPLACEMENT): Qualitative implications for MVPD under Poisson timing
+% ======================================================================
+
+\section{Qualitative implications of automation for the marginal value of public funds}
+\label{sec:mvpf}
+
+\subsection{Overview and economic channels}
+\label{sec:mvpf_overview}
+
+This section studies how automation affects the Ramsey marginal value of public funds (MVPD): the shadow value of relaxing the government's balanced-budget constraint by one unit of resources (in efficiency units). Two points are central.
+
+\paragraph{(i) MVPD equals worker marginal utility, but its response to automation is ambiguous.}
+Because all tax revenue is rebated lump-sum to hand-to-mouth workers each instant, the MVPD equals worker marginal utility. Automation can raise or lower worker consumption through (a) wages and (b) the capital-income tax base, both of which depend on the regime and on the endogenous capital stock. In particular, even \emph{on impact} at the regime change there is no general guarantee that wages fall. Over longer horizons, wages may rise or fall depending on how capital accumulation responds (e.g.\ how elastic capital supply is, given preferences and policy), and therefore whether the post-automation path of the capital stock places the economy above or below the wage-crossing threshold derived below.
+
+\paragraph{(ii) MVPD admits an exact ``deadweight-loss per dollar'' identity.}
+Because the capital-income tax rate is a policy choice variable, an exact local marginal-welfare identity equates the MVPD times the marginal tax base to the marginal welfare cost of raising the tax, inclusive of all wedges. This yields an exact decomposition into a mechanical revenue-base component, a behavioural component operating through the sensitivity of capital-owner policy to taxation (hence depending on intertemporal substitution / curvature), and an insurance component because the tax scales idiosyncratic return risk.
+
+\paragraph{A Poisson-timing subtlety: ``states'' vs.\ ``events''.}
+Uncertainty concerns \emph{when} automation arrives. At the stopping time $\tau$ itself, the post-automation regime occurs with probability one. Therefore, when we discuss ``Arrow prices across regimes'' we must do so at a deterministic evaluation date $\bar t>0$ (or via infinitesimal jump/no-jump claims). Moreover, the event $\{\tau \le \bar t\}$ does not pin down a unique realised state $(k_{\bar t},m_{\bar t})$ because $\tau$ can occur anywhere in $[0,\bar t]$. Hence any spanning result stated only in terms of the two coarse events $\{\tau > \bar t\}$ and $\{\tau \le \bar t\}$ must use conditional expectations of MVPDs.
+
+\subsection{Definitions and Ramsey identities}
+\label{sec:mvpf_identities}
+
+Fix a regime $s\in\{0,1\}$ and a planner state $(k,m)$ in efficiency units. Let the planner choose a per-worker transfer $\widetilde T_s$ and (in the Ramsey problem) the regime-dependent capital-income tax rate $\tau_{k,s}$, subject to the instantaneous balanced-budget constraint
+\begin{equation}
+\label{eq:bb_constraint}
+\chi \widetilde T_s = \tau_{k,s}\, r_s(k)\,k .
+\end{equation}
+Per-worker worker consumption (efficiency units) is
+\begin{equation}
+\label{eq:worker_consumption}
+\widetilde c^{W}_s(k;\tau_k)
+= \frac{\widetilde w_s(k)}{\chi} + \widetilde T_s
+= \frac{1}{\chi}\Big(\widetilde w_s(k) + \tau_{k,s}\, r_s(k)\,k\Big),
+\end{equation}
+where, under frontier adoption,
+\begin{equation}
+\label{eq:prices_and_returns}
+\widetilde w_s(k) = (1-I_s)\Phi(I_s)\, k^{I_s},\qquad
+R_s(k)= I_s\Phi(I_s)\,k^{I_s-1},\qquad
+r_s(k) = R_s(k)-\delta,\qquad
+\Phi(I)= I^{-I}(1-I)^{-(1-I)}.
+\end{equation}
+(Correction relative to earlier drafts: $\delta$ subtracts from the gross rental rate; it is not in the exponent.)
+
+Capital-owner welfare enters through the equilibrium consumption--wealth ratio $\omega_s(k;\tau_k)$ and the wealth moment $m$. The induced closed drifts are
+\begin{align}
+\label{eq:drift_k}
+f_{k,s}(k,m;\tau_k)
+&= \Big((1-\tau_{k,s})r_s(k) - g - \omega_s(k;\tau_k)\Big)k,\\[4pt]
+\label{eq:drift_m}
+f_{m,s}(k,m;\tau_k)
+&=
+\Bigg(
+(1-\gamma)\Big((1-\tau_{k,s})r_s(k) - g - \omega_s(k;\tau_k)\Big)
+-\frac{\gamma(1-\gamma)}{2}(1-\tau_{k,s})^2\sigma_s(k)^2
+\Bigg)m.
+\end{align}
+
+\paragraph{Domain restriction (tax base).}
+In the ``per-dollar'' statements below we restrict attention to states such that the instantaneous capital-income tax base is strictly positive:
+\begin{equation}
+\label{eq:tax_base_positive}
+r_s(k)\,k>0.
+\end{equation}
+(If $r_s(k)k\le 0$, the same algebra holds but the interpretation is that of financing a marginal subsidy rather than raising a marginal dollar of revenue.)
+
+\begin{proposition}[Ramsey MVPD and an exact deadweight-loss identity]
+\label{prop:mvpf_identity}
+Define $\Lambda_s(k,m)$ as the multiplier on the balanced-budget constraint \eqref{eq:bb_constraint} in the regime-$s$ current-value Hamiltonian. Then:
+\begin{enumerate}
+\item[(i)] (Transfer FOC) The transfer first-order condition implies
+\begin{equation}
+\label{eq:mvpf_equals_mu}
+\Lambda_s(k,m) = u'\!\Big(\widetilde c^{W}_s(k;\tau_k)\Big).
+\end{equation}
+
+\item[(ii)] (Exact local tax identity) The exact local marginal-welfare identity for $\tau_{k,s}$ implies
+\begin{equation}
+\label{eq:local_tax_identity}
+\Lambda_s(k,m)\, r_s(k)\,k
+=
+-\frac{\partial}{\partial \tau_{k,s}}
+\Bigg[
+(1-\chi)\frac{\omega_s(k;\tau_k)^{\,1-\gamma}}{1-\gamma}\, m
++ J_{s,k}(k,m)\, f_{k,s}(k,m;\tau_k)
++ J_{s,m}(k,m)\, f_{m,s}(k,m;\tau_k)
+\Bigg],
+\end{equation}
+where $J_{s,k}=\partial_k J_s$ and $J_{s,m}=\partial_m J_s$ are held fixed when differentiating with respect to the control $\tau_{k,s}$ (envelope logic for controls).
+
+\emph{Clarification.} The worker-side marginal effect does not appear as an additional term in \eqref{eq:local_tax_identity} because $\widetilde T_s$ is the direct control for worker resources: the worker term is priced by $\Lambda_s=u'(\widetilde c^W_s)$ via the constraint term $\Lambda_s(\tau_{k,s}r_s(k)k-\chi \widetilde T_s)$, and the transfer FOC \eqref{eq:mvpf_equals_mu} already enforces correct marginal valuation of $\widetilde T_s$.
+
+\item[(iii)] (Exact decomposition) Writing $\omega_{s,\tau}(k;\tau_k):=\partial \omega_s(k;\tau_k)/\partial \tau_{k,s}$ and suppressing $(k,m)$ arguments, \eqref{eq:local_tax_identity} admits the exact decomposition
+\begin{equation}
+\label{eq:mvpf_decomp}
+\Lambda_s\, r_s(k)\,k = M_s + B_s + I_s,
+\qquad
+\Lambda_s = \frac{M_s+B_s+I_s}{r_s(k)\,k},
+\end{equation}
+where
+\begin{align}
+\label{eq:Ms_def}
+M_s
+&:= J_{s,k}\, r_s(k)\,k + J_{s,m}(1-\gamma)\, r_s(k)\, m,\\[4pt]
+\label{eq:Bs_def}
+B_s
+&:= \Big(J_{s,k}\,k + J_{s,m}(1-\gamma)\,m - (1-\chi)m\,\omega_s^{-\gamma}\Big)\,\omega_{s,\tau},\\[4pt]
+\label{eq:Is_def}
+I_s
+&:= - J_{s,m}\,\gamma(1-\gamma)\,(1-\tau_{k,s})\,\sigma_s(k)^2\, m.
+\end{align}
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Part (i). The Hamiltonian includes $\chi u(\widetilde c^W_s)$ and the constraint term $\Lambda_s(\tau_{k,s}r_s(k)k-\chi \widetilde T_s)$. Since $\partial \widetilde c^W_s/\partial \widetilde T_s = 1$,
+\[
+0=\frac{\partial}{\partial \widetilde T_s}\Big(\chi u(\widetilde c^W_s)-\Lambda_s\chi \widetilde T_s\Big)
+=\chi u'(\widetilde c^W_s)-\Lambda_s\chi,
+\]
+so $\Lambda_s=u'(\widetilde c^W_s)$.
+
+Part (ii). Differentiating the Hamiltonian with respect to $\tau_{k,s}$ and holding $J_{s,k},J_{s,m}$ fixed yields
+\[
+0 = \Lambda_s r_s(k)k + \frac{\partial}{\partial \tau_{k,s}}
+\Bigg[
+(1-\chi)\frac{\omega_s^{\,1-\gamma}}{1-\gamma}m + J_{s,k}f_{k,s}+J_{s,m}f_{m,s}
+\Bigg],
+\]
+which rearranges to \eqref{eq:local_tax_identity}.
+
+Part (iii). Compute derivatives exactly:
+\[
+\frac{\partial}{\partial \tau_{k,s}}\Big((1-\chi)\frac{\omega_s^{\,1-\gamma}}{1-\gamma}m\Big)
+=-(1-\chi)m\,\omega_s^{-\gamma}\,\omega_{s,\tau},
+\qquad
+\frac{\partial f_{k,s}}{\partial \tau_{k,s}}
+=-(r_s(k)+\omega_{s,\tau})k,
+\]
+and
+\[
+\frac{\partial f_{m,s}}{\partial \tau_{k,s}}
+=
+\Big(
+-(1-\gamma)(r_s(k)+\omega_{s,\tau})
++\gamma(1-\gamma)(1-\tau_{k,s})\sigma_s(k)^2
+\Big)m.
+\]
+Substituting into \eqref{eq:local_tax_identity} and collecting terms yields \eqref{eq:mvpf_decomp}--\eqref{eq:Is_def}.
+\end{proof}
+
+\paragraph{Commitment Ramsey vs.\ Markov Ramsey.}
+In the Ramsey problem of Section~7, the planner commits at $t=0$ to constants $(\tau_{k,0},\tau_{k,1})$, rather than choosing $\tau_{k,s}$ as a function of $(k,m)$. Proposition~\ref{prop:mvpf_identity} is therefore best interpreted as an \emph{exact local marginal-welfare identity} (the effect of a marginal change in $\tau_{k,s}$ evaluated at a given state), and it coincides with a pointwise first-order condition only in a Markov Ramsey formulation where $\tau_{k,s}=\tau_{k,s}(k,m)$ is an admissible policy function.
+
+\subsection{Automation and the MVPD at the arrival state}
+\label{sec:mvpf_arrival}
+
+Let $(k_\tau,m_\tau)$ denote the (continuous) state at the arrival time $\tau$. Define
+\begin{equation}
+\label{eq:mvpf_jump_defs}
+\Lambda_{\tau^-} := \Lambda_0(k_\tau,m_\tau),
+\qquad
+\Lambda_{\tau^+} := \Lambda_1(k_\tau,m_\tau),
+\end{equation}
+i.e.\ the MVPD evaluated immediately before and immediately after the regime switch, holding $(k_\tau,m_\tau)$ fixed.
+
+\begin{proposition}[Exact condition for MVPD to rise at automation (impact, holding $(k_\tau,m_\tau)$ fixed)]
+\label{prop:mvpf_rise_impact}
+Assume CRRA worker utility with $u'(c)=c^{-\gamma}$. Then
+\begin{equation}
+\label{eq:mvpf_rise_impact}
+\Lambda_{\tau^+} > \Lambda_{\tau^-}
+\iff
+\widetilde c^{W}_1(k_\tau;\tau_k) < \widetilde c^{W}_0(k_\tau;\tau_k),
+\end{equation}
+where
+\begin{equation}
+\label{eq:cw_pre_post_at_tau}
+\widetilde c^{W}_0(k_\tau;\tau_k)=\frac{1}{\chi}\Big(\widetilde w_0(k_\tau)+\tau_{k,0}r_0(k_\tau)k_\tau\Big),
+\qquad
+\widetilde c^{W}_1(k_\tau;\tau_k)=\frac{1}{\chi}\Big(\widetilde w_1(k_\tau)+\tau_{k,1}r_1(k_\tau)k_\tau\Big).
+\end{equation}
+Equivalently,
+\begin{equation}
+\label{eq:impact_inequality_resources}
+\widetilde w_1(k_\tau)+\tau_{k,1}r_1(k_\tau)k_\tau
+<
+\widetilde w_0(k_\tau)+\tau_{k,0}r_0(k_\tau)k_\tau.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By Proposition~\ref{prop:mvpf_identity}(i), $\Lambda_{\tau^\pm}=u'(\widetilde c^W_{\tau^\pm})$. Under CRRA, $u'$ is strictly decreasing, so $\Lambda_{\tau^+}>\Lambda_{\tau^-}$ iff $\widetilde c^W_{\tau^+}<\widetilde c^W_{\tau^-}$. Substitute \eqref{eq:worker_consumption}.
+\end{proof}
+
+\begin{proposition}[Knife-edge condition for equal MVPD at the arrival state]
+\label{prop:mvpf_equal_impact}
+Under CRRA, $\Lambda_{\tau^+}=\Lambda_{\tau^-}$ if and only if $\widetilde c^{W}_1(k_\tau;\tau_k)=\widetilde c^{W}_0(k_\tau;\tau_k)$. If taxes are constrained to be constant across regimes, $\tau_{k,0}=\tau_{k,1}=\bar\tau$, then $\Lambda_{\tau^+}=\Lambda_{\tau^-}$ holds if and only if
+\begin{equation}
+\label{eq:knife_edge_constant_tax}
+\widetilde w_1(k_\tau)-\widetilde w_0(k_\tau)
++
+\bar\tau\Big(r_1(k_\tau)-r_0(k_\tau)\Big)k_\tau
+=0.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Immediate from strict monotonicity of $u'$ and \eqref{eq:cw_pre_post_at_tau}.
+\end{proof}
+
+\begin{lemma}[Automation need not reduce wages, even on impact]
+\label{lem:wage_ambiguous_impact}
+Fix any $k>0$. The impact wage comparison in efficiency units satisfies
+\begin{equation}
+\label{eq:wage_ratio}
+\frac{\widetilde w_1(k)}{\widetilde w_0(k)}
+=
+\frac{1-I_1}{1-I_0}\cdot \frac{\Phi(I_1)}{\Phi(I_0)}\cdot k^{\,I_1-I_0}.
+\end{equation}
+Hence $\widetilde w_1(k)>\widetilde w_0(k)$ if and only if
+\begin{equation}
+\label{eq:wage_crossing_threshold}
+k >
+\left(
+\frac{1-I_0}{1-I_1}\cdot \frac{\Phi(I_0)}{\Phi(I_1)}
+\right)^{\!\frac{1}{I_1-I_0}}.
+\end{equation}
+In particular, the sign of the impact wage change is generally ambiguous and depends on $(I_0,I_1)$, on $\Phi(\cdot)$, and on the realised state $k$ at arrival.
+\end{lemma}
+
+\begin{proof}
+Substitute $\widetilde w_s(k)=(1-I_s)\Phi(I_s)k^{I_s}$ and rearrange.
+\end{proof}
+
+\paragraph{Impact at fixed state vs.\ full (ex ante) effects.}
+Proposition~\ref{prop:mvpf_rise_impact} isolates the impact effect at $\tau$ holding $(k_\tau,m_\tau)$ fixed. The full effect of automation on MVPD from date $0$ also operates through the endogenous distribution of $(k_\tau,m_\tau)$ itself, because pre-automation policies and expectations influence accumulation prior to $\tau$. Thus, even if \eqref{eq:impact_inequality_resources} holds pointwise at a given $(k,m)$, the ex ante effect can differ once one accounts for how automation changes (or is anticipated to change) the path (and distribution) of $k$, and therefore both the wage and tax-base components of worker resources---including the possibility that wages rise in the long run if post-automation accumulation pushes $k$ above the threshold in Lemma~\ref{lem:wage_ambiguous_impact}.
+
+\subsection{State-contingent instruments under Poisson timing}
+\label{sec:mvpf_spanning}
+
+Fix a deterministic evaluation date $\bar t>0$ and define the two events
+\begin{equation}
+\label{eq:events}
+E_0(\bar t) := \{\tau > \bar t\},\qquad
+E_1(\bar t) := \{\tau \le \bar t\}.
+\end{equation}
+Under constant hazard $\lambda$, their physical probabilities are
+\begin{equation}
+\label{eq:event_probs}
+\mathbb P(E_0(\bar t))=e^{-\lambda \bar t},\qquad
+\mathbb P(E_1(\bar t))=1-e^{-\lambda \bar t}.
+\end{equation}
+
+Let $\Lambda_{\bar t}$ denote the (random) MVPD at date $\bar t$ induced by the realised equilibrium state:
+\begin{equation}
+\label{eq:random_mvpf_at_tbar}
+\Lambda_{\bar t}:=\Lambda_{S_{\bar t}}(k_{\bar t},m_{\bar t}),
+\qquad
+S_{\bar t}:=1\{\tau\le \bar t\}.
+\end{equation}
+Because $E_1(\bar t)$ does not pin down a unique realised state at $\bar t$, define the conditional and probability-weighted MVPDs
+\begin{equation}
+\label{eq:conditional_weighted_mvpf}
+\Lambda^{\bar t}_s := \mathbb E\!\left[\Lambda_{\bar t}\mid E_s(\bar t)\right],
+\qquad
+\overline\Lambda_s(\bar t):=\mathbb E\!\left[\Lambda_{\bar t}\,1_{E_s(\bar t)}\right]
+=\mathbb P(E_s(\bar t))\,\Lambda^{\bar t}_s,
+\qquad s\in\{0,1\}.
+\end{equation}
+
+\paragraph{Arrow claims over events.}
+Assume that at date $0$ there exist Arrow claims delivering one unit of the consumption numeraire at date $\bar t$ contingent on $E_s(\bar t)$, with date-$0$ prices $q_s(\bar t)>0$, $s\in\{0,1\}$. These $q_s(\bar t)$ are Arrow \emph{prices} (not per-probability densities), and therefore embed the physical probabilities $\mathbb P(E_s(\bar t))$.
+
+\begin{proposition}[Correct equalisation under complete spanning of the two events at date $\bar t$]
+\label{prop:event_spanning}
+Suppose the government can implement any event-contingent transfer adjustment $(d\widetilde T_0,d\widetilde T_1)$ at date $\bar t$ contingent on $(E_0(\bar t),E_1(\bar t))$ satisfying the zero-present-value constraint
+\begin{equation}
+\label{eq:zero_pv_event_transfer}
+q_0(\bar t)\, d\widetilde T_0 + q_1(\bar t)\, d\widetilde T_1 = 0.
+\end{equation}
+Then, at an interior optimum,
+\begin{equation}
+\label{eq:weighted_mvpf_equals_prices}
+\frac{\overline\Lambda_1(\bar t)}{\overline\Lambda_0(\bar t)}=\frac{q_1(\bar t)}{q_0(\bar t)}.
+\end{equation}
+Equivalently, in terms of conditional MVPDs,
+\begin{equation}
+\label{eq:conditional_mvpf_ratio}
+\frac{\Lambda^{\bar t}_1}{\Lambda^{\bar t}_0}
+=
+\frac{\mathbb P(E_0(\bar t))}{\mathbb P(E_1(\bar t))}\cdot \frac{q_1(\bar t)}{q_0(\bar t)}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Consider a perturbation that shifts resources at $\bar t$ according to the event-contingent rule
+\[
+d\widetilde T(\omega)=d\widetilde T_0\,1_{E_0(\bar t)}(\omega)+d\widetilde T_1\,1_{E_1(\bar t)}(\omega).
+\]
+Holding other allocations fixed, the induced welfare variation from this resource shift is proportional to the discounted expected MVPD-weighted transfer:
+\[
+dV = e^{-\rho_e \bar t}\chi\, \mathbb E\!\left[\Lambda_{\bar t}\, d\widetilde T(\omega)\right]
+= e^{-\rho_e \bar t}\chi\Big(\overline\Lambda_0(\bar t)\,d\widetilde T_0+\overline\Lambda_1(\bar t)\,d\widetilde T_1\Big).
+\]
+The common factor $e^{-\rho_e \bar t}\chi$ is immaterial. Using \eqref{eq:zero_pv_event_transfer}, write $d\widetilde T_1=-(q_0(\bar t)/q_1(\bar t))d\widetilde T_0$. Interior optimality implies $dV=0$ for all feasible perturbations, hence
+\[
+0=d\widetilde T_0\left(\overline\Lambda_0(\bar t)-\overline\Lambda_1(\bar t)\frac{q_0(\bar t)}{q_1(\bar t)}\right)
+\quad\text{for all } d\widetilde T_0,
+\]
+which yields \eqref{eq:weighted_mvpf_equals_prices}. Substituting $\overline\Lambda_s(\bar t)=\mathbb P(E_s(\bar t))\Lambda^{\bar t}_s$ yields \eqref{eq:conditional_mvpf_ratio}.
+\end{proof}
+
+\paragraph{Why $q_0(\bar t)=q_1(\bar t)$ does not imply $\Lambda^{\bar t}_0=\Lambda^{\bar t}_1$.}
+If $q_0(\bar t)=q_1(\bar t)$, then \eqref{eq:conditional_mvpf_ratio} implies
+\[
+\frac{\Lambda^{\bar t}_1}{\Lambda^{\bar t}_0}=\frac{\mathbb P(E_0(\bar t))}{\mathbb P(E_1(\bar t))},
+\]
+so $\Lambda^{\bar t}_1=\Lambda^{\bar t}_0$ holds only on the knife-edge $\mathbb P(E_0(\bar t))=\mathbb P(E_1(\bar t))$ (equivalently $e^{-\lambda \bar t}=1/2$), not in general.
+
+\paragraph{Per-probability state-price densities (a convenient convention).}
+Define per-probability state-price densities by
+\begin{equation}
+\label{eq:per_prob_prices}
+\widetilde q_s(\bar t):=\frac{q_s(\bar t)}{\mathbb P(E_s(\bar t))},\qquad s\in\{0,1\}.
+\end{equation}
+Then \eqref{eq:conditional_mvpf_ratio} becomes the familiar-looking condition
+\begin{equation}
+\label{eq:mvpf_equals_perprob_prices}
+\frac{\Lambda^{\bar t}_1}{\Lambda^{\bar t}_0}=\frac{\widetilde q_1(\bar t)}{\widetilde q_0(\bar t)}.
+\end{equation}
+
+\paragraph{Full-state spanning (stronger but conceptually clean).}
+If markets instead span the full realised state at $\bar t$ (equivalently the realised arrival time $\tau$ and hence the realised $(k_{\bar t},m_{\bar t})$), then the spanning result is pointwise: the planner's marginal value $\Lambda_{\bar t}(\omega)$ is proportional to the state-price density for that refined state. Proposition~\ref{prop:event_spanning} is the correct counterpart under the coarse two-event spanning assumption \eqref{eq:zero_pv_event_transfer}.
+
+\subsection{Equity exposure as a hedging instrument (not the spot price of installed capital)}
+\label{sec:mvpf_hedging}
+
+Earlier we normalised the spot price of installed capital to one (consumption numeraire, no adjustment costs). Thus a physical unit of installed capital is not itself a state-contingent payoff object at a fixed date. What can be state-contingent is a security (e.g.\ an equity claim on profit/dividend flows) whose date-$\bar t$ payoff differs depending on whether automation has occurred by $\bar t$.
+
+Let a traded security deliver the event-contingent payoff $(X_0(\bar t),X_1(\bar t))$ at date $\bar t$, where $X_s(\bar t)$ is the payoff conditional on $E_s(\bar t)$. Its date-$0$ price is
+\begin{equation}
+\label{eq:security_price}
+p(\bar t)=q_0(\bar t)X_0(\bar t)+q_1(\bar t)X_1(\bar t).
+\end{equation}
+Define the Arrow-value (risk-neutral) average payoff
+\begin{equation}
+\label{eq:arrow_value_avg}
+\overline X(\bar t):=\frac{p(\bar t)}{q_0(\bar t)+q_1(\bar t)}.
+\end{equation}
+A zero-cost ``tilt'' that increases payoff in $E_1(\bar t)$ and decreases payoff in $E_0(\bar t)$ is obtained by going long $\theta$ units of $(X_0(\bar t),X_1(\bar t))$ and short $\theta \overline X(\bar t)$ units of the riskless payoff $(1,1)$, yielding net payoff
+\begin{equation}
+\label{eq:tilt_payoff}
+\theta\Big(X_0(\bar t)-\overline X(\bar t),\,X_1(\bar t)-\overline X(\bar t)\Big).
+\end{equation}
+By construction,
+\begin{equation}
+\label{eq:tilt_zero_cost}
+q_0(\bar t)\Big(X_0(\bar t)-\overline X(\bar t)\Big)+q_1(\bar t)\Big(X_1(\bar t)-\overline X(\bar t)\Big)=0.
+\end{equation}
+
+\emph{Reminder (coarse-event projection).} Real ``equity exposure'' will typically depend on the full realised state at $\bar t$ (since $\tau$ can be anywhere in $[0,\bar t]$). The pair $(X_0(\bar t),X_1(\bar t))$ should therefore be interpreted as the \emph{two-event projection} of a richer state-contingent payoff.
+
+\begin{proposition}[Direction of optimal hedging exposure under coarse two-event spanning]
+\label{prop:hedging_direction}
+Assume $X_1(\bar t)>X_0(\bar t)$ and $q_0(\bar t),q_1(\bar t)>0$. The planner strictly prefers $\theta>0$ (a tilt toward the automation-by-$\bar t$ event) if and only if
+\begin{equation}
+\label{eq:hedging_condition}
+\frac{\overline\Lambda_1(\bar t)}{\overline\Lambda_0(\bar t)}>\frac{q_1(\bar t)}{q_0(\bar t)},
+\end{equation}
+and strictly prefers $\theta<0$ if and only if the inequality is reversed. Equivalently,
+\begin{equation}
+\label{eq:hedging_condition_perprob}
+\frac{\Lambda^{\bar t}_1}{\Lambda^{\bar t}_0}>\frac{\widetilde q_1(\bar t)}{\widetilde q_0(\bar t)},
+\qquad
+\widetilde q_s(\bar t):=\frac{q_s(\bar t)}{\mathbb P(E_s(\bar t))}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The welfare effect of the zero-cost tilt \eqref{eq:tilt_payoff} is proportional to the discounted expected MVPD-weighted payoff at $\bar t$:
+\[
+dV(\theta)
+=
+e^{-\rho_e \bar t}\chi\,\theta\Big(
+\overline\Lambda_0(\bar t)\big(X_0(\bar t)-\overline X(\bar t)\big)
++
+\overline\Lambda_1(\bar t)\big(X_1(\bar t)-\overline X(\bar t)\big)
+\Big).
+\]
+Using \eqref{eq:tilt_zero_cost},
+\[
+X_0(\bar t)-\overline X(\bar t)
+=
+-\frac{q_1(\bar t)}{q_0(\bar t)}\big(X_1(\bar t)-\overline X(\bar t)\big).
+\]
+Since $X_1(\bar t)>\overline X(\bar t)>X_0(\bar t)$, we have $X_1(\bar t)-\overline X(\bar t)>0$. Substitution yields
+\[
+dV(\theta)
+=
+e^{-\rho_e \bar t}\chi\,\theta\big(X_1(\bar t)-\overline X(\bar t)\big)
+\left(
+\overline\Lambda_1(\bar t)-\overline\Lambda_0(\bar t)\frac{q_1(\bar t)}{q_0(\bar t)}
+\right).
+\]
+The prefactor is positive, so $\mathrm{sign}(dV(\theta))=\mathrm{sign}\!\left(\theta\left(\overline\Lambda_1/\overline\Lambda_0-q_1/q_0\right)\right)$, giving \eqref{eq:hedging_condition}. Using $\overline\Lambda_s(\bar t)=\mathbb P(E_s(\bar t))\Lambda^{\bar t}_s$ and \eqref{eq:per_prob_prices} gives \eqref{eq:hedging_condition_perprob}.
+\end{proof}
+
+\subsection{Dependence on $\gamma$ and the empirically relevant case $\gamma>1$}
+\label{sec:mvpf_gamma}
+
+\begin{proposition}[Curvature amplifies MVPD gaps at any fixed state]
+\label{prop:curvature_amplifies}
+Under CRRA worker utility $u'(c)=c^{-\gamma}$, for any pair of regimes evaluated at the same state $(k,m)$,
+\begin{equation}
+\label{eq:mvpf_ratio_curvature}
+\frac{\Lambda_1(k,m)}{\Lambda_0(k,m)}
+=
+\left(\frac{\widetilde c^W_1(k;\tau_k)}{\widetilde c^W_0(k;\tau_k)}\right)^{-\gamma}.
+\end{equation}
+For any fixed ratio $\widetilde c^W_1/\widetilde c^W_0\neq 1$, the magnitude of the MVPD gap is increasing in $\gamma$.
+\end{proposition}
+
+\begin{proof}
+Immediate from $\Lambda_s=u'(\widetilde c^W_s)=(\widetilde c^W_s)^{-\gamma}$.
+\end{proof}
+
+\begin{proposition}[Insurance component of capital taxation when $\gamma>1$]
+\label{prop:insurance_component}
+In the MVPD decomposition in Proposition~\ref{prop:mvpf_identity}(iii), the insurance wedge is
+\[
+I_s=-J_{s,m}\,\gamma(1-\gamma)\,(1-\tau_{k,s})\,\sigma_s(k)^2\,m.
+\]
+For $\gamma>1$, the coefficient $\gamma(\gamma-1)$ scales the magnitude of the insurance motive embedded in capital taxation. If automation changes either $\sigma_s(k)$ across regimes or the planner gradient $J_{s,m}(k,m)$ at relevant states (e.g.\ at $(k_\tau,m_\tau)$ or in conditional expectation at date $\bar t$), then the insurance content of raising revenue differs across regimes, implying that MVPD ratios (and hence the hedging incentive in Proposition~\ref{prop:hedging_direction}) are generically state dependent under restrictions such as $\tau_{k,0}=\tau_{k,1}$.
+\end{proposition}
+
+\begin{proof}
+This follows directly from Proposition~\ref{prop:mvpf_identity}(iii) and the sign change in $(1-\gamma)$ at $\gamma=1$.
+\end{proof}
+
+\paragraph{Intertemporal substitution.}
+Under CRRA, the capitalist elasticity of intertemporal substitution equals $1/\gamma$. Thus, empirically common $\gamma>1$ corresponds to EIS$<1$, which tends to reduce the responsiveness of consumption growth and saving incentives to changes in after-tax returns. In this model that operates through $\omega_s(k;\tau_k)$ and the induced $k$-dynamics, and therefore affects wages and the MVPD both (i) directly via curvature as in Proposition~\ref{prop:curvature_amplifies} and (ii) indirectly via the endogenous distribution of $(k_\tau,m_\tau)$ and the conditional distribution of $(k_{\bar t},m_{\bar t})$.
+
+
+
+
+
+\end{document}
