@@ -1,0 +1,59 @@
+\begin{appendix}
+
+
+
+
+% ============================================================
+% Main text block: State-constrained HJB characterisation (PDMP, one-way switching)
+% ============================================================
+% ============================================================
+% Online Appendix block: translation note (tangent cone vs state-constraint inequality)
+% ============================================================
+
+\appendix
+\section{State constraints: tangent-cone formulation and link to Fleming--Soner}
+
+This appendix briefly relates the tangent-cone ``inward-feasible'' formulation used in Section 6.2 to the standard
+state-constraint boundary inequality characterisation in Fleming and Soner (2006, Section II.12).
+
+\subsection*{A.1 Setup}
+Fix a regime $s$ and let $V_s\subseteq S$ be the admissible domain (viability set) for the deterministic state $x=(k,L)$.
+Let $f_s^{\hat u}(x;u)$ denote the equilibrium-induced drift mapping under pointwise control $u\in U_s(x)$ given an anticipated
+rule $\hat u(\cdot)$, and let $T_{V_s}(x)$ denote the Bouligand tangent cone of $V_s$ at $x$.
+
+In the deterministic setting, the hard state constraint ``never exit $V_s$'' requires that at any boundary point
+$x\in\partial V_s$ the planner select controls whose drift is viable, i.e.
+\[
+f_s^{\hat u}(x;u)\in T_{V_s}(x).
+\]
+This yields the inward-feasible correspondence
+\[
+U^{\mathrm{in}}_s(x):=\{u\in U_s(x): f_s^{\hat u}(x;u)\in T_{V_s}(x)\},
+\]
+which is the restriction used in Section 6.2. Conceptually, this is the continuous-time analogue of imposing boundary
+conditions only at inflow boundaries (outflow requires no additional condition).
+
+\subsection*{A.2 Equivalence to outward-normal inequalities for smooth boundaries}
+Suppose that locally near a boundary point $x\in\partial V_s$, the admissible domain can be represented as
+\[
+V_s\cap \mathcal N = \{y: g(y)\ge 0\}
+\]
+for some $C^1$ function $g$ with $\nabla g(x)\neq 0$ and a neighbourhood $\mathcal N$ of $x$. Then the tangent cone condition is
+equivalent to the inward-drift inequality
+\[
+\nabla g(x)\cdot f_s^{\hat u}(x;u)\ge 0,\qquad u\in U^{\mathrm{in}}_s(x).
+\]
+This corresponds to the state-constraint boundary condition in Fleming and Soner (2006, Section II.12), where the constrained
+viscosity supersolution property is expressed via a boundary inequality involving outward normals.
+
+\subsection*{A.3 One-way Poisson switching}
+In our PDMP setting, regime 0 switches to regime 1 with intensity $\lambda>0$ and regime 1 is absorbing. Accordingly, only the
+regime-0 HJB contains the zeroth-order coupling term $+\lambda(J_1-J_0)$; there is no switching term in regime 1. This is orthogonal
+to the state-constraint boundary logic: the inward-feasible restriction is applied regime-by-regime on $\partial V_s$.
+
+\subsection*{A.4 Takeaway}
+The main text formulation—interior HJB plus boundary restriction to controls with drift in the tangent cone, interpreted in the
+viscosity sense—is a standard state-constrained characterisation for deterministic control problems and is directly compatible with
+the state-constraint viscosity solution framework in Fleming and Soner (2006, Section II.12).
+
+\end{appendix}

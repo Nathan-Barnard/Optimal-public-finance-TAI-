@@ -1,0 +1,1764 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}  
+\usepackage{amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{assumption}{Assumption}
+\usepackage{natbib}   
+\usepackage{setspace}
+\usepackage{appendix}
+
+\title{TANK model poisson arrival gov debt 1.10}
+\author{Nathan Barnard}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+% ----------------------------------------------------------------------
+%  Households and assets (corrected): net payout r^k_s(k) is the common
+%  taxable drift object across household and government blocks; clarify
+%  idiosyncratic diffusion washes out in aggregates.
+% ----------------------------------------------------------------------
+
+\section{Households and Assets}\label{sec:hh_assets}
+
+\subsection{Regimes, idiosyncratic risk, and deterministic aggregates}
+
+Let $(\Omega,\mathcal F,(\mathcal F_t)_{t\ge 0},\mathbb P)$ be a filtered probability space supporting
+(i) a Poisson process $N=(N_t)_{t\ge 0}$ with constant intensity $\lambda>0$, and
+(ii) a continuum of independent standard Brownian motions $\{Z^i=(Z^i_t)_{t\ge 0}\}_{i\in[0,1]}$,
+independent of $N$.
+Let $\tau := \inf\{t\ge 0: N_t=1\}$ and define the regime indicator
+\[
+s_t :=
+\begin{cases}
+0, & t<\tau \quad\text{(pre-automation)},\\
+1, & t\ge \tau \quad\text{(post-automation)}.
+\end{cases}
+\]
+Regime $1$ is absorbing.
+
+The aggregate state is the detrended capital stock per efficiency unit, $k_t\in\mathcal K\subset\mathbb R_+$.
+There is no aggregate diffusion risk: conditional on the regime, $k$ evolves deterministically,
+\begin{equation}\label{eq:k_law_hh}
+\dot k_t = \mu^k_{s_t}(k_t).
+\end{equation}
+Idiosyncratic shocks affect individual capital-income realisations but wash out in the aggregate, so they do not enter \eqref{eq:k_law_hh}.
+
+\subsection{Numeraire and traded assets}
+
+The consumption good is the numeraire. There are no adjustment costs or wedges between consumption and installed capital, so Tobin's $q$ is unity:
+\begin{equation}\label{eq:q_one_hh}
+q_t \equiv 1.
+\end{equation}
+
+\paragraph{Risk-free short account.}
+There is a real short account with regime- and state-dependent instantaneous rate $r^f_s(k)$,
+\begin{equation}\label{eq:safe_account_hh}
+dA^f_t = r^f_{s_t}(k_t)\,A^f_t\,dt, \qquad A^f_0=1.
+\end{equation}
+
+\paragraph{Capital claim and net payout convention.}
+Let $r^k_s(k)$ denote the deterministic \emph{net payout rate} per unit of the traded aggregate capital claim in regime $s$ as a function of $k$.
+In this baseline, the net payout rate coincides with the net-of-depreciation spot rental return:
+\begin{equation}\label{eq:rk_equals_rental_netdep}
+r^k_s(k) \equiv R^K_s(k) - \delta,
+\end{equation}
+where $R^K_s(k)$ is the spot rental rate per unit of installed capital and $\delta\ge 0$ is the depreciation rate.
+
+At the level of an individual capital owner $i$, the per-unit payoff from holding the capital claim has drift $r^k_{s_t}(k_t)$ and an idiosyncratic diffusion component:
+\begin{equation}\label{eq:cap_income_hh}
+dY^{k,i}_t = r^k_{s_t}(k_t)\,dt + \sigma^k_{s_t}(k_t)\,dZ^i_t,
+\end{equation}
+where $\sigma^k_s(\cdot)\ge 0$. The diffusion term is idiosyncratic and diversifies in the aggregate; hence all \emph{aggregate} cash flows and tax receipts
+depend only on $(s_t,k_t)$ and the drift $r^k_{s_t}(k_t)$.
+
+\subsection{Taxes}
+
+In regime $s$, a proportional tax at rate $\tau_s\in[0,1)$ is levied on capital owners' income \emph{flows}:
+(i) interest income on the short account and (ii) capital-claim payout income in \eqref{eq:cap_income_hh}.
+At the individual level, taxation applies to realised income flows; at the aggregate level, idiosyncratic diffusion components wash out.
+
+\subsection{Households}
+
+There are two groups: workers (hand-to-mouth) and capital owners.
+
+\paragraph{Workers.}
+Workers do not participate in asset markets and consume their wage plus transfers:
+\begin{equation}\label{eq:worker_cons_hh}
+c^W_t = w_{s_t}(k_t) + T_t,
+\end{equation}
+where $w_s(k)$ is the equilibrium wage from the production block and $T_t$ is a government transfer taken as given here.
+
+\paragraph{Capital owners (individual problem).}
+Each capital owner $i$ has CRRA preferences
+\begin{equation}\label{eq:pref_hh}
+\mathbb E\Big[\int_0^\infty e^{-\rho t}\,\frac{(c^i_t)^{1-\gamma}}{1-\gamma}\,dt\Big],
+\qquad \rho>0,\ \gamma>0,\ \gamma\neq 1,
+\end{equation}
+with the log case as $\gamma\to 1$.
+
+Let $W^i_t$ denote the financial wealth of capital owner $i$ in consumption units. Let $\pi^i_t$ be the share of wealth invested in the capital claim,
+with the remainder $1-\pi^i_t$ invested in the short account. Controls are $(c^i_t,\pi^i_t)$.
+With flow taxation at rate $\tau_s$ on interest and capital payouts, individual wealth evolves as
+\begin{align}
+dW^i_t
+={}&\Big[(1-\tau_{s_t})\,r^f_{s_t}(k_t)\,(1-\pi^i_t)\,W^i_t
++(1-\tau_{s_t})\,r^k_{s_t}(k_t)\,\pi^i_t\,W^i_t
+-c^i_t\Big]dt \nonumber\\
+&\quad +(1-\tau_{s_t})\,\sigma^k_{s_t}(k_t)\,\pi^i_t\,W^i_t\,dZ^i_t. \label{eq:wealth_hh}
+\end{align}
+We impose a no-Ponzi condition and restrict attention to admissible strategies satisfying the natural borrowing limit.
+In the pre-automation regime, admissibility is defined using the pointwise minimum of the regime-wise natural limits evaluated at the post-switch state,
+so feasibility is preserved even if the regime switches immediately.
+
+\subsection{Capital owner HJB equations}
+
+By symmetry, write the individual value function as $V_s(W,k)$ for a generic owner facing \eqref{eq:wealth_hh} given aggregate state $k$.
+Define, for regime $s$,
+\[
+\mu^W_s(W,k;c,\pi)
+:= (1-\tau_s)\,r^f_s(k)\,(1-\pi)\,W
++(1-\tau_s)\,r^k_s(k)\,\pi\,W - c,
+\qquad
+\sigma^W_s(W,k;\pi)
+:= (1-\tau_s)\,\sigma^k_s(k)\,\pi\,W.
+\]
+
+\paragraph{Post-automation ($s=1$).}
+\begin{equation}\label{eq:HJB_post_hh}
+\rho V_1(W,k)=\max_{c,\pi}\Big\{
+\frac{c^{1-\gamma}}{1-\gamma}
++V_{1,W}(W,k)\,\mu^W_1(W,k;c,\pi)
++V_{1,k}(W,k)\,\mu^k_1(k)
++\frac12 V_{1,WW}(W,k)\,\big(\sigma^W_1(W,k;\pi)\big)^2
+\Big\}.
+\end{equation}
+
+\paragraph{Pre-automation ($s=0$).}
+\begin{equation}\label{eq:HJB_pre_hh}
+\begin{aligned}
+\rho V_0(W,k)=\max_{c,\pi}\Big\{
+&\frac{c^{1-\gamma}}{1-\gamma}
++V_{0,W}(W,k)\,\mu^W_0(W,k;c,\pi)
++V_{0,k}(W,k)\,\mu^k_0(k)
++\frac12 V_{0,WW}(W,k)\,\big(\sigma^W_0(W,k;\pi)\big)^2 \\
+&\quad +\lambda\big[V_{1}(W,\mathcal T(k)) - V_{0}(W,k)\big]
+\Big\}.
+\end{aligned}
+\end{equation}
+Equivalently,
+\[
+(\rho+\lambda)V_0(W,k)=\max_{c,\pi}\Big\{
+\frac{c^{1-\gamma}}{1-\gamma}
++V_{0,W}\mu^W_0+V_{0,k}\mu^k_0+\frac12 V_{0,WW}(\sigma^W_0)^2+\lambda V_1(W,\mathcal T(k))
+\Big\}.
+\]
+
+\subsection{First-order conditions}
+
+\begin{equation}\label{eq:FOC_c_hh}
+V_{s,W}(W,k) = c^{-\gamma}, \qquad s\in\{0,1\}.
+\end{equation}
+
+\begin{equation}\label{eq:FOC_pi_hh}
+0
+=
+V_{s,W}(W,k)\,(1-\tau_s)\,W\Big(r^k_s(k)-r^f_s(k)\Big)
++
+V_{s,WW}(W,k)\,(1-\tau_s)^2\,W^2\,\pi\,\big(\sigma^k_s(k)\big)^2,
+\qquad s\in\{0,1\}.
+\end{equation}
+
+
+% ----------------------------------------------------------------------
+%  Government block (corrected): consistent with household net payout r^k,
+%  claim-share interpretation of phi, pricing kernel xi_t for aggregate
+%  traded payoffs, and admissibility under Option A.
+% ----------------------------------------------------------------------
+
+ % ----------------------------------------------------------------------
+%  Government block (updated): physical-claim interpretation consistent
+%  with q≡1 and r^k = R^K - δ. Government finances changes in its capital
+%  position d(φ k), not only k dφ. Transfers are residual under Option A.
+% ----------------------------------------------------------------------
+
+\section{Government: debt, public capital ownership, transfers, and solvency}\label{sec:gov}
+
+The government issues real risk-free debt implemented as the short account in \eqref{eq:safe_account_hh}.
+Let $B_t$ denote the outstanding stock of government debt, measured in units of the consumption numeraire.
+The government can also hold a diversified claim to installed capital. Throughout, all traded aggregate cash flows are functions of $(s_t,k_t)$.
+
+\subsection{Capital claim, net payout, and consistency with households}
+
+Let $r^k_s(k)$ denote the (deterministic) net-of-depreciation payout rate per unit of installed capital in regime $s$ as a function of $k$.
+This is the same drift object that governs individual capital-claim income in \eqref{eq:cap_income_hh} and enters the capital-owner wealth drift in \eqref{eq:wealth_hh}.
+In the baseline,
+\begin{equation}\label{eq:rk_def_gov}
+r^k_s(k)\equiv R^K_s(k)-\delta,
+\end{equation}
+where $R^K_s(k)$ is the spot rental rate per unit of installed capital and $\delta\ge 0$ is depreciation.
+
+Because depreciation is treated as an internal replacement requirement (not a distributable payout), net accumulation $\dot k_t$ corresponds to the creation of new installed-capital claims.
+With no adjustment costs, the replacement-cost price of installed capital is unity, $q_t\equiv 1$, so newly created claims are purchased at unit price.
+
+Idiosyncratic diffusion components diversify and therefore do not enter aggregate public receipts or aggregate tax revenue.
+
+\subsection{Public capital ownership and issuance financing}
+
+Let $\phi_s:\mathcal K\to[0,1]$ be a regime-wise policy rule for the government's ownership \emph{share} in installed capital,
+and define $\phi_t:=\phi_{s_t}(k_t)$ so that the government holds $\phi_t k_t$ units (and market value) of installed-capital claims.
+Changes in the government's position reflect both (i) changes in the share $\phi_t$ and (ii) changes in the aggregate capital stock $k_t$.
+
+Since $q_t\equiv 1$, the flow expenditure required to finance changes in the government's installed-capital position equals the time derivative of its position value:
+\begin{equation}\label{eq:gov_cap_position_cost}
+\text{capital acquisition expenditure flow} = \frac{d}{dt}\big(\phi_t k_t\big)=k_t\,\dot\phi_t+\phi_t\,\dot k_t.
+\end{equation}
+In particular, even if $\phi_t$ is constant within regime, the government must finance its share $\phi_t$ of net capital accumulation $\dot k_t$.
+
+Public capital income (a diversified aggregate flow) is
+\begin{equation}\label{eq:gov_cap_income_updated}
+\text{public capital income flow} = \phi_t\,k_t\,r^k_{s_t}(k_t).
+\end{equation}
+
+\subsection{Debt rule (Option A)}
+
+To preserve a one-dimensional aggregate state space, government debt is specified by a regime-wise rule
+\begin{equation}\label{eq:gov_debt_rule_updated}
+B_t = \mathcal B_{s_t}(k_t),
+\end{equation}
+where $\mathcal B_s:\mathcal K\to\mathbb R$ is an exogenous policy function. Feasibility at $t=0$ requires $B_0=\mathcal B_0(k_0)$.
+
+\subsection{Flow budget constraint and transfers as residual}
+
+Transfers to workers, $T_t$, are determined endogenously to satisfy the government flow budget constraint.
+
+The risk-free short account \eqref{eq:safe_account_hh} is government-issued debt. Hence private interest income equals $r^f_{s_t}(k_t)\,B_t$
+and is taxed at the proportional rate $\tau_{s_t}$, consistent with the household budget \eqref{eq:wealth_hh}.
+
+In regime $s$, the government levies a proportional tax at rate $\tau_s\in[0,1)$ on private capital-owner income flows:
+(i) interest income on government debt and (ii) net-of-depreciation capital payouts. The private tax bases are therefore
+\begin{equation}\label{eq:gov_tax_bases_updated}
+\text{private taxable capital-income flow} = (1-\phi_t)\,k_t\,r^k_{s_t}(k_t),
+\qquad
+\text{private interest-income flow} = r^f_{s_t}(k_t)\,B_t.
+\end{equation}
+Aggregate tax receipts are non-stochastic conditional on $(s_t,k_t)$ because idiosyncratic diffusion components wash out in the aggregate.
+Tax revenue is
+\begin{equation}\label{eq:gov_tax_revenue_updated}
+\text{tax revenue flow}
+=
+\tau_{s_t}\Big[(1-\phi_t)\,k_t\,r^k_{s_t}(k_t) + r^f_{s_t}(k_t)\,B_t\Big].
+\end{equation}
+
+The government flow budget constraint (in consumption units, per efficiency unit) is
+\begin{equation}\label{eq:gov_budget_updated}
+\dot B_t
+=
+r^f_{s_t}(k_t)\,B_t
++ T_t
++ \frac{d}{dt}\big(\phi_t k_t\big)
+- \phi_t\,k_t\,r^k_{s_t}(k_t)
+- \tau_{s_t}\Big[(1-\phi_t)\,k_t\,r^k_{s_t}(k_t) + r^f_{s_t}(k_t)\,B_t\Big].
+\end{equation}
+
+Under the policy rules $\phi_t=\phi_{s_t}(k_t)$ and $B_t=\mathcal B_{s_t}(k_t)$, transfers are the residual that closes \eqref{eq:gov_budget_updated}.
+Using $\dot k_t=\mu^k_{s_t}(k_t)$, $\dot B_t=\mathcal B'_{s_t}(k_t)\mu^k_{s_t}(k_t)$, and $\dot\phi_t=\phi'_{s_t}(k_t)\mu^k_{s_t}(k_t)$, we obtain
+\begin{equation}\label{eq:gov_transfers_updated}
+\begin{aligned}
+T_t
+={}& \mathcal B'_{s_t}(k_t)\,\mu^k_{s_t}(k_t)
+- r^f_{s_t}(k_t)\,\mathcal B_{s_t}(k_t)
+- \Big(k_t\,\phi'_{s_t}(k_t)\,\mu^k_{s_t}(k_t) + \phi_{s_t}(k_t)\,\mu^k_{s_t}(k_t)\Big)
++ \phi_{s_t}(k_t)\,k_t\,r^k_{s_t}(k_t) \\
+&\quad
++ \tau_{s_t}\Big[(1-\phi_{s_t}(k_t))\,k_t\,r^k_{s_t}(k_t) + r^f_{s_t}(k_t)\,\mathcal B_{s_t}(k_t)\Big].
+\end{aligned}
+\end{equation}
+
+\subsection{Pricing kernel and market-value solvency}
+
+Let $\xi_t$ denote an aggregate pricing kernel (state-price density) adapted to the aggregate filtration
+$\mathcal G_t:=\sigma\{(s_u,k_u):u\le t\}$, with $\xi_0=1$, such that for any traded aggregate payoff $X_T$,
+\begin{equation}\label{eq:pricing_kernel_updated}
+P_t(X_T)=\mathbb E_t\!\left[\frac{\xi_T}{\xi_t}\,X_T\right].
+\end{equation}
+In particular, $\xi_t A^f_t$ is a $\mathbb P$-martingale.
+
+Since aggregate uncertainty is only the Poisson regime switch, we represent $\xi$ in the pre-automation regime as
+\begin{equation}\label{eq:xi_pre_updated}
+\frac{d\xi_t}{\xi_{t-}}
+=
+- r^f_0(k_t)\,dt
++ \big(\chi(k_t)-1\big)\big(dN_t-\lambda\,dt\big),
+\qquad t<\tau,
+\end{equation}
+and in the post-automation regime as
+\begin{equation}\label{eq:xi_post_updated}
+\frac{d\xi_t}{\xi_t} = - r^f_1(k_t)\,dt,
+\qquad t\ge \tau,
+\end{equation}
+where $\chi(k)>0$ is the jump in the pricing kernel associated with the automation event (equivalently, the risk-neutral intensity is $\lambda^Q(k)=\lambda\,\chi(k)$).
+The function $\chi(\cdot)$ is pinned down in equilibrium by no-arbitrage pricing of traded aggregate payoffs exposed to the automation jump, in particular the installed-capital claim.
+
+Let the government's market-value net liabilities be
+\begin{equation}\label{eq:net_liabilities_updated}
+\mathcal L_t := B_t - \phi_t\,k_t.
+\end{equation}
+
+A market-imposed no-Ponzi condition (a feasibility restriction, not an optimality condition) is
+\begin{equation}\label{eq:npc_updated}
+\limsup_{t\to\infty}\mathbb E\big[\xi_t\,\mathcal L_t\big]\le 0.
+\end{equation}
+Assume policies and state dynamics ensure $\mathbb E[\xi_t\,|\mathcal L_t|]<\infty$ for all $t\ge 0$.
+
+\subsection{Admissibility under Option A}
+
+Let $\underline T_s(k)$ denote an exogenous lower bound on transfers (e.g.\ $\underline T_s(k)=0$ if transfers must be nonnegative).
+Because debt is rule-based under \eqref{eq:gov_debt_rule_updated}, feasibility is imposed directly on the implied transfer function.
+Define $T_s(k)$ as the right-hand side of \eqref{eq:gov_transfers_updated} evaluated at $(s_t,k_t)=(s,k)$.
+
+We restrict attention to policy rules $\{\mathcal B_s(\cdot),\phi_s(\cdot)\}_{s\in\{0,1\}}$ such that
+\begin{equation}\label{eq:transfer_feasibility_updated}
+T_s(k)\ge \underline T_s(k)\quad\text{for all }k\in\mathcal K,\ \ s\in\{0,1\},
+\end{equation}
+and such that \eqref{eq:npc_updated} holds under the induced paths.
+
+In the pre-automation regime, because the regime may switch immediately, admissibility is imposed pointwise across regimes:
+for all $k\in\mathcal K$,
+\begin{equation}\label{eq:pre_admissibility_updated}
+T_0(k)\ge \underline T_0(k)
+\quad\text{and}\quad
+T_1(\mathcal T(k))\ge \underline T_1(\mathcal T(k)),
+\end{equation}
+so feasibility is preserved even if the automation event occurs at $t=0^+$.
+(Here $\mathcal T(\cdot)$ is the post-switch mapping for the aggregate state; in the baseline with non-jumping stock variables, $\mathcal T(k)=k$.)
+
+\section{General equilibrium: HJB, pricing kernel, and closure in one aggregate state}
+This section takes (i) the household block and (ii) the government rule block and closes the equilibrium in the one-dimensional aggregate state $k$, regime-by-regime, under Option A (rule-based $B_s(k)$ and $\phi_s(k)$). Throughout, we are explicit about what is priced in the aggregate, and we keep track of the tax wedge faced by the marginal investor.
+
+\subsection{Aggregate states, regime process, and what is priced}
+Let $s_t \in \{0,1\}$ denote the regime, where $0$ is the pre-automation regime and $1$ is the post-automation regime. The switch $0 \to 1$ arrives at Poisson intensity $\lambda>0$, and regime $1$ is absorbing. Let
+\[
+\mathcal{G}_t := \sigma\{(s_u,k_u): u \le t\}
+\]
+denote the aggregate filtration.
+
+The unique continuous aggregate state is detrended capital $k_t$, which evolves deterministically within regime:
+\begin{equation}
+\dot{k}_t = \mu^k_{s_t}(k_t).
+\tag{28}
+\end{equation}
+There is no aggregate Brownian risk; the only aggregate risk is the regime jump in $s_t$.
+
+Individual capital owners may face idiosyncratic diffusion risk in their capital income/returns. This risk is unspanned and affects their private portfolio choice, but it washes out in aggregates by the law of large numbers. Consequently, aggregate objects (government budget, resource constraint, and the aggregate pricing kernel defined below) are measurable with respect to $\mathcal{G}_t$ and feature Poisson risk only.
+
+In particular, the pricing kernel $\xi_t$ introduced in Section 3.7 is a kernel for \emph{after-tax payoffs delivered to capital owners} that are $\mathcal{G}_t$-measurable (i.e.\ depend only on $(s_t,k_t)$). The kernel $\xi_t$ is not required (and generally cannot) price payoffs that depend on idiosyncratic shocks.
+
+\subsection{Government rules, flow budget constraint, and transfers}
+The government follows regime- and state-dependent rules
+\begin{equation}
+B_t = B_{s_t}(k_t), \qquad \phi_t = \phi_{s_t}(k_t),
+\tag{29}
+\end{equation}
+where $B_t$ is the stock of government debt (in consumption units per efficiency unit), and $\phi_t$ is the government ownership share of the aggregate capital stock.
+
+The government levies a proportional tax at rate $\tau_s \in [0,1)$ on private capital-owner income flows: (i) interest income on government debt, and (ii) net-of-depreciation capital payouts. Define the net payout rate per unit of installed capital by
+\begin{equation}
+r^k_s(k) \equiv R^K_s(k) - \delta,
+\tag{30}
+\end{equation}
+where $R^K_s(k)$ is the spot rental rate and $\delta$ is depreciation.
+
+Conditional on $(s_t,k_t)$, aggregate tax revenue is non-stochastic:
+\begin{equation}
+\text{tax revenue flow}=\tau_{s_t}\Big((1-\phi_t)k_t\, r^k_{s_t}(k_t) + r^f_{s_t}(k_t) B_t\Big).
+\tag{31}
+\end{equation}
+
+The government flow budget constraint (in consumption units, per efficiency unit) is
+\begin{equation}
+\dot{B}_t
+=
+r^f_{s_t}(k_t) B_t
++ T_t
++ \frac{d(\phi_t k_t)}{dt}
+- \phi_t k_t\, r^k_{s_t}(k_t)
+-\tau_{s_t}\Big((1-\phi_t)k_t\, r^k_{s_t}(k_t) + r^f_{s_t}(k_t)B_t\Big),
+\tag{32}
+\end{equation}
+where $T_t$ denotes transfers to workers.
+
+Under the policy rules (29), transfers are the residual that closes (32). Solving (32) for transfers and using $\dot{k}_t=\mu^k_{s_t}(k_t)$, $\dot{B}_t=B'_{s_t}(k_t)\mu^k_{s_t}(k_t)$, and
+\[
+\frac{d(\phi_t k_t)}{dt}=\big(k_t\phi'_{s_t}(k_t)+\phi_{s_t}(k_t)\big)\mu^k_{s_t}(k_t),
+\]
+the implied transfer is
+\begin{equation}
+\begin{aligned}
+T_t
+&=
+B'_{s_t}(k_t)\mu^k_{s_t}(k_t)
+- r^f_{s_t}(k_t)B_{s_t}(k_t)
+- k_t \phi'_{s_t}(k_t)\mu^k_{s_t}(k_t)
+- \phi_{s_t}(k_t)\mu^k_{s_t}(k_t)
+\\
+&\quad
++ \phi_{s_t}(k_t)k_t r^k_{s_t}(k_t)
++ \tau_{s_t}\Big((1-\phi_{s_t}(k_t))k_t r^k_{s_t}(k_t) + r^f_{s_t}(k_t)B_{s_t}(k_t)\Big).
+\end{aligned}
+\tag{33}
+\end{equation}
+This expression makes explicit that under Option A, $T_t$ inherits dependence on $\mu^k_s(\cdot)$ through the term
+\[
+\big(B'_s(k)-k\phi'_s(k)-\phi_s(k)\big)\mu^k_s(k),
+\]
+which captures the contemporaneous fiscal cost of maintaining the government’s share of capital as $k$ evolves.
+
+\subsection{Switch implementation: continuity at the realised switch time}
+Let $\tau$ denote the (random) regime-switch time. In the baseline, we impose no impulse financing at $\tau$ by requiring that, along the equilibrium path, the government balance-sheet objects are continuous at the realised switch.
+
+Because the fiscal rule is $B_t=B_{s_t}(k_t)$ and $\phi_t=\phi_{s_t}(k_t)$, one convenient sufficient condition for no impulse financing at $\tau$ is the following matching/admissibility restriction:
+\begin{equation}
+B_0(k)=B_1(k), \qquad \phi_0(k)=phi_1(k)
+\quad \text{for all $k$ in the solved domain.}
+\tag{34}
+\end{equation}
+Condition (34) is stronger than the minimal requirement of continuity only at the realised switch state $k_\tau$. We adopt (34) for tractability, because it preserves a one-dimensional Markov equilibrium in the state $k$ under the rule structure (29).
+
+With $q\equiv 1$ (no adjustment costs) and $k$ continuous, (34) rules out a mechanical wealth jump at $\tau$ coming from fiscal implementation. The pre-regime continuation term in the owner HJB therefore remains $\lambda\big(V_1(W,k)-V_0(W,k)\big)$ evaluated at the same $(W,k)$.
+
+\subsection{Capital-owner opportunity set and HJB reduction (with leverage constraints)}
+Fix a regime $s$ and aggregate state $k$. The capital owner has access to:
+\begin{itemize}
+\item a risk-free government bond paying gross contractual short rate $r^f_s(k)$, on which the owner receives an after-tax rate $(1-\tau_s)r^f_s(k)$;
+\item a risky installed-capital opportunity with deterministic aggregate net payout rate $r^k_s(k)$ and idiosyncratic diffusion risk at the individual level.
+\end{itemize}
+
+It is useful to distinguish (i) the \emph{undiversified private installed-capital opportunity} that enters an individual owner’s wealth dynamics below, whose realised payoff depends on idiosyncratic shocks and is therefore not $\mathcal G_t$-measurable, from (ii) a \emph{diversified aggregate capital claim} obtained by pooling idiosyncratic risks across owners. The diversified claim has payoffs measurable with respect to $\mathcal G_t$ (depending only on $(s_t,k_t)$) and is the relevant object when speaking about no-arbitrage pricing under the aggregate kernel $\xi_t$. By contrast, the idiosyncratic Brownian component in \eqref{35} is explicitly unpriced by $\xi_t$.
+
+Let $W_t$ denote the owner’s financial wealth (in consumption units). Let $\pi_t$ be the share of wealth allocated to the risky installed-capital opportunity, and let $\sigma^K_s(k)$ denote the idiosyncratic diffusion coefficient of the risky return (which does not enter aggregates). Impose an exogenous leverage constraint
+\[
+\pi_t \in [\underline{\pi},\overline{\pi}],
+\]
+with $\underline{\pi}<0$ permitted if shorting is allowed.
+
+Then the after-tax wealth dynamics are
+\begin{equation}
+dW_t
+=
+\Big[(1-\tau_{s_t})\big(r^f_{s_t}(k_t)+\pi_t(r^k_{s_t}(k_t)-r^f_{s_t}(k_t))\big)W_t - c_t\Big]dt
++(1-\tau_{s_t})\pi_t \sigma^K_{s_t}(k_t)W_t\, dZ_t,
+\tag{35}
+\end{equation}
+where $Z_t$ is idiosyncratic Brownian motion.
+
+Let $V_s(W,k)$ be the owner value function in regime $s$. For $s=1$ (absorbing) set $\lambda_1=0$, and for $s=0$ set $\lambda_0=\lambda$. The regime-wise HJB is
+\begin{equation}
+\begin{aligned}
+0
+=
+\max_{c,\ \pi \in [\underline{\pi},\overline{\pi}]}
+\Bigg\{
+&\frac{c^{1-\gamma}}{1-\gamma}
++ V_{W,s}(W,k)\Big[(1-\tau_s)\big(r^f_s(k)+\pi(r^k_s(k)-r^f_s(k))\big)W - c\Big]
+\\
+&\quad
++\frac{1}{2}V_{WW,s}(W,k)\,(1-\tau_s)^2\pi^2(\sigma^K_s(k))^2W^2
++V_{k,s}(W,k)\mu^k_s(k)
+\\
+&\quad
++\lambda_s\big(V_1(W,k)-V_s(W,k)\big)
+-\rho V_s(W,k)
+\Bigg\}.
+\end{aligned}
+\tag{36}
+\end{equation}
+
+We impose the homothetic guess
+\begin{equation}
+V_s(W,k)=\frac{W^{1-\gamma}}{1-\gamma}\,\Psi_s(k),\qquad \Psi_s(k)>0,
+\tag{37}
+\end{equation}
+which implies an owner consumption--wealth ratio of the form
+\begin{equation}
+c_{K,s}(W,k)=\omega_s(k)W,\qquad \omega_s(k):=\Psi_s(k)^{-1/\gamma}.
+\tag{38}
+\end{equation}
+
+When the leverage constraint is slack (interior optimum), the portfolio first-order condition delivers the usual Merton-form risky share as a function of the (after-tax) local risk premium and idiosyncratic variance:
+\begin{equation}
+0
+=
+V_{W,s}(W,k)(1-\tau_s)(r^k_s(k)-r^f_s(k))W
++
+V_{WW,s}(W,k)(1-\tau_s)^2\pi(\sigma^K_s(k))^2W^2.
+\tag{39}
+\end{equation}
+If the constraint binds, (39) is replaced by the associated Kuhn--Tucker conditions.
+
+\subsection{Portfolio market clearing and determination of the short rate}
+Workers do not participate in asset markets. The private sector (capital owners) holds all government debt $B_t$ and all privately owned capital $(1-\phi_t)k_t$. Hence aggregate private wealth (per efficiency unit) is
+\begin{equation}
+W^K_s(k):=(1-\phi_s(k))k+B_s(k).
+\tag{40}
+\end{equation}
+We impose admissibility $W^K_s(k)>0$ on the solved domain.
+
+Because the risky installed-capital opportunity corresponds to private capital holdings $(1-\phi_s(k))k$, the market-clearing risky share is
+\begin{equation}
+\pi^{mc}_s(k)
+:=
+\frac{(1-\phi_s(k))k}{(1-\phi_s(k))k+B_s(k)}
+=
+\frac{(1-\phi_s(k))k}{W^K_s(k)}.
+\tag{41}
+\end{equation}
+
+In equilibrium, the owner’s optimal risky share equals the market-clearing share:
+\begin{equation}
+\pi_s(k)=\pi^{mc}_s(k).
+\tag{42}
+\end{equation}
+This closure relies on symmetry/aggregation in the capital-owner sector: with a continuum of ex-ante identical owners, the optimal risky share is the same across owners as a function of $(s,k)$ (interior Merton share or a common constraint bound), so aggregate risky demand equals $\pi_s(k)W^K_s(k)$ and clears against the aggregate supply $(1-\phi_s(k))k$.
+
+Given $(r^k_s(k),\sigma^K_s(k),\tau_s)$ and the policy rules $(B_s(k),\phi_s(k))$, condition (42) closes for the endogenous short-rate schedule $r^f_s(k)$ at interior points. With leverage constraints, admissibility additionally requires $\pi^{mc}_s(k)\in[\underline{\pi},\overline{\pi}]$ on the solved domain; otherwise the equilibrium conditions must be stated using the appropriate complementarity conditions when constraints bind.
+
+Remark (knife-edge for one-dimensional closure). The market-clearing step \eqref{42} uses wealth-independence of the individual risky share under the maintained homothetic structure. If one introduces wealth-dependent admissibility constraints (e.g.\ borrowing limits that bind for some owners), then the correct clearing condition generally takes the form $\int \pi(W,k)\,W\,dF(W) = (1-\phi(k))k$ and the one-dimensional closure in $k$ need not survive.
+
+\subsection{Resource constraint and closure for $\mu^k_s(k)$}
+Workers are hand-to-mouth, so their consumption equals labour income plus transfers:
+\begin{equation}
+C^W_s(k)=w_s(k)+T_s(k),
+\tag{43}
+\end{equation}
+where $T_s(k)$ is given by the residual formula (33).
+
+Capital-owner consumption equals
+\begin{equation}
+C^K_s(k)=\omega_s(k)W^K_s(k),
+\tag{44}
+\end{equation}
+with $\omega_s(k)$ coming from the HJB reduction.
+
+Let $Y_s(k)$ denote output per efficiency unit in regime $s$ (from the production block). The goods market/resource constraint determines the capital drift:
+\begin{equation}
+\mu^k_s(k)=Y_s(k)-C^W_s(k)-C^K_s(k)-\delta k-gk,
+\tag{45}
+\end{equation}
+where $g$ is the detrending term (if present in your efficiency-unit formulation). Because $C^W_s(k)$ depends on $T_s(k)$ and $T_s(k)$ depends on $\mu^k_s(k)$ via (33), equation (45) is an implicit closure condition for $\mu^k_s(k)$.
+
+Substituting (33) into (45) yields a linear-in-$\mu^k_s(k)$ equation. Writing the $\mu^k$-loading in $T_s(k)$ as $\big(B'_s(k)-k\phi'_s(k)-\phi_s(k)\big)\mu^k_s(k)$, solvability requires the non-singularity condition
+\[
+1 + B'_s(k) - k\phi'_s(k) - \phi_s(k) \neq 0
+\]
+on the solved domain. This is an admissibility restriction on fiscal rules under Option A.
+
+\subsection{Aggregate pricing kernel, taxes, and identification of the jump factor (Story 1)}
+Let $\xi_t$ denote an aggregate pricing kernel (state-price density) adapted to $\mathcal G_t$ with
+$\xi_0=1$. The kernel $\xi_t$ is defined to price \emph{after-tax payoffs delivered to capital owners}
+that are measurable with respect to $\mathcal G_t$. That is, for any $\mathcal G_T$-measurable
+(after-tax) payoff $\widetilde X_T$,
+\begin{equation}
+P_t(\widetilde X_T)=\mathbb{E}_t\!\left[\frac{\xi_T}{\xi_t}\,\widetilde X_T\right].
+\tag{46}
+\end{equation}
+By construction, $\xi_t$ prices only aggregate payoffs that depend on $(s_t,k_t)$; it does not price
+payoffs that depend on idiosyncratic shocks.
+
+\paragraph{Risk-free asset under taxes.}
+Government debt pays a gross contractual short rate $r^f_{s_t}(k_t)$. However, capital owners receive
+the after-tax payoff. Accordingly, define the after-tax short account $\widetilde A^f_t$ by
+\begin{equation}
+d\widetilde A^f_t = (1-\tau_{s_t})r^f_{s_t}(k_t)\,\widetilde A^f_t\,dt.
+\tag{47}
+\end{equation}
+We impose the no-arbitrage restriction that $\xi_t \widetilde A^f_t$ is a $\mathbb P$-martingale.
+
+Since aggregate risk is Poisson-only, $\xi_t$ has no Brownian term. Define the (state-dependent) jump
+factor by
+\begin{equation}
+\chi(k):=\mathbb{E}\!\left[\left.\frac{\xi_\tau}{\xi_{\tau^-}}\ \right|\ k_{\tau^-}=k\right].
+\tag{48}
+\end{equation}
+
+\paragraph{Story 1 (identification of the jump factor).}
+Under the homothetic policies implied by \eqref{37}--\eqref{38}, each owner's consumption satisfies
+$c^i_{K,s}(t)=\omega_s(k_t)W^i_t$, with the same $\omega_s(k)$ across owners as a function of $(s,k)$.
+Under the matching condition \eqref{34}, there is no impulse financing at $\tau$ and therefore no
+mechanical wealth jump across the regime switch, so $W^i_\tau=W^i_{\tau^-}$ for each $i$. Hence each
+owner's marginal utility jumps by the same factor at the switch:
+\[
+\frac{u'(c^i_{K,1}(\tau))}{u'(c^i_{K,0}(\tau^-))}
+=
+\left(\frac{\omega_1(k)}{\omega_0(k)}\right)^{-\gamma},
+\]
+independent of $i$. Since $\xi_t$ is a pricing kernel for $\mathcal G_t$-measurable (after-tax) payoffs
+delivered to capital owners, its jump factor must coincide with the common rescaling of marginal
+utilities across the switch. Therefore,
+\[
+\chi(k)
+=
+\frac{\xi_\tau}{\xi_{\tau^-}}
+=
+\left(\frac{\omega_1(k)}{\omega_0(k)}\right)^{-\gamma}.
+\]
+This identification concerns the jump factor of $\xi_t$; it does not require constructing the full
+path of $\xi_t$ from cross-sectional marginal utilities in the presence of unspanned idiosyncratic
+risk.
+
+Define the corresponding risk-neutral jump intensity in regime $0$ by
+\begin{equation}
+\lambda^Q(k):=\lambda\chi(k).
+\tag{49}
+\end{equation}
+
+Government market-value solvency is imposed separately (no-Ponzi/transversality), using the same
+aggregate pricing kernel $\xi_t$.
+
+\subsection{Definition of equilibrium and admissibility conditions}
+Fix policy rules $B_s(\cdot)$ and $\phi_s(\cdot)$ and tax rates $\tau_s$. A (stationary, Markov)
+equilibrium is a collection of regime-wise functions
+\[
+\Big\{\omega_s(k),\ \pi_s(k),\ r^f_s(k),\ \mu^k_s(k),\ T_s(k)\Big\}_{s\in\{0,1\}}
+\]
+and an aggregate pricing kernel $\xi_t$, such that for each $s$ and each $k$ in the solved domain:
+\begin{enumerate}
+\item \textbf{(Household optimality)} Given $(r^f_s(k),\mu^k_s(k))$, the pair $(\omega_s(k),\pi_s(k))$
+is induced by the HJB \eqref{36} under the homothetic reduction \eqref{37}--\eqref{38}, with
+$\pi\in[\underline\pi,\overline\pi]$.
+\item \textbf{(Portfolio clearing)} \eqref{42} holds at interior points. Admissibility requires
+$W^K_s(k)>0$ and $\pi^{mc}_s(k)\in[\underline\pi,\overline\pi]$ on the solved domain; otherwise
+equilibrium must be stated using the associated complementarity conditions.
+\item \textbf{(Government feasibility)} Transfers satisfy $T_s(k)$ given by \eqref{33}.
+\item \textbf{(Goods market)} $\mu^k_s(k)$ satisfies \eqref{45} given consumption \eqref{43}--\eqref{44},
+and the non-singularity condition $1+B'_s(k)-k\phi'_s(k)-\phi_s(k)\neq 0$ holds on the solved domain.
+\item \textbf{(Pricing)} $\xi_t$ prices $\mathcal G_t$-measurable after-tax payoffs delivered to capital
+owners via \eqref{46}. The after-tax short account \eqref{47} satisfies that $\xi_t\widetilde A^f_t$ is
+a $\mathbb P$-martingale, and the jump factor satisfies \eqref{48} and is identified by Story 1 as above.
+\end{enumerate}
+
+Admissibility additionally requires:
+(i) the matching condition \eqref{34} (no impulse financing at the realised switch),
+(ii) transfer feasibility (e.g.\ pointwise lower bounds if imposed), and
+(iii) market-value solvency/no-Ponzi under $\xi_t$.
+
+
+\section{Stationary Markov equilibrium objects and transition dynamics}
+\label{sec:GE_solution}
+
+This section has two distinct goals.
+
+\begin{enumerate}
+\item \textbf{Equilibrium objects (stationary Markov).} Compute time-invariant equilibrium functions
+\[
+\big\{\Psi_s(k),\ \omega_s(k),\ r^f_s(k),\ \mu^k_s(k),\ T_s(k)\big\}_{s\in\{0,1\}}
+\]
+defined on a domain $k\in[k_{\min},k_{\max}]$, where $k$ is the aggregate capital stock in efficiency
+units and $s\in\{0,1\}$ is the regime.
+
+\item \textbf{Transition path (time-varying state).} Given an initial condition $k_0>0$ (and initial regime
+$s_0=0$), construct the full time path $t\mapsto k_t$ and the induced paths of all aggregates. Importantly,
+even though the equilibrium \emph{functions} are stationary (depend only on $(s,k)$), the equilibrium
+\emph{state} $k_t$ in efficiency units generally evolves continuously over time both before and after
+automation:
+\[
+\dot k_t = \mu^k_{s_t}(k_t),\qquad k_t \ \text{continuous in } t,
+\]
+with a Poisson switch in $s_t$.
+\end{enumerate}
+
+\subsection{Inputs, unknowns, and a maintained interiority condition}
+Fix policy rules $\{B_s(k),\phi_s(k)\}_{s\in\{0,1\}}$, taxes $\{\tau_s\}_{s\in\{0,1\}}$, parameters
+$(\rho,\gamma,\delta,\lambda)$, and the regime-wise technology schedules:
+\[
+Y_s(k),\qquad w_s(k),\qquad r^k_s(k),\qquad \sigma^K_s(k),\qquad s\in\{0,1\}.
+\]
+The equilibrium unknowns are the regime-wise functions
+\[
+\Psi_s(k)\quad (\text{equivalently } \omega_s(k)=\Psi_s(k)^{-1/\gamma}),\qquad
+r^f_s(k),\qquad \mu^k_s(k),\qquad T_s(k).
+\]
+
+A key maintained condition for the reduction below is that the market-clearing risky share is strictly
+interior to the leverage constraint on the solved domain, so that the unconstrained Merton portfolio
+condition applies pointwise in $k$:
+\begin{equation}
+\pi^{mc}_s(k)\in(\underline\pi,\overline\pi)\quad \text{for all } k \in [k_{\min},k_{\max}],\ s\in\{0,1\}.
+\tag{A1}
+\end{equation}
+If \eqref{A1} fails at some $k$, then the portfolio constraint binds, the interior Merton FOC does not hold,
+and the local pin-down of $r^f_s(k)$ used below is not valid on that region. In practice, one either (i)
+widens $(\underline\pi,\overline\pi)$ or (ii) restricts the solved domain so that \eqref{A1} holds.
+
+\subsection{Part I: solving the stationary Markov equilibrium functions}
+
+\subsubsection{Step 1: grid for $k$ and admissible domain}
+Choose a computational domain $k\in[k_{\min},k_{\max}]$ and a grid
+\[
+k_1<k_2<\cdots<k_N.
+\]
+In applications it is often convenient to work in log state $x=\log k$ and solve on an equally spaced
+grid in $x$, which automatically enforces $k>0$ and improves stability at low $k$.
+
+Admissibility restrictions from Section 3 should be enforced on the solved domain:
+\[
+W^K_s(k) = (1-\phi_s(k))k + B_s(k) > 0,
+\qquad
+1 + B'_s(k) - k\phi'_s(k) - \phi_s(k) \neq 0,
+\]
+and the strict-interior leverage feasibility condition \eqref{A1}. The denominator condition is essential
+for the explicit drift closure below; in code, enforce
+\[
+\min_{k\in[k_{\min},k_{\max}]} |1+\alpha_s(k)| > \varepsilon_\alpha
+\]
+with $\varepsilon_\alpha$ (e.g.\ $10^{-4}$).
+
+\subsubsection{Step 2: market clearing and the market-clearing risky share}
+Market clearing implies aggregate private wealth
+\[
+W^K_s(k) = (1-\phi_s(k))k + B_s(k),
+\]
+and the market-clearing risky share
+\begin{equation}
+\pi^{mc}_s(k)=\frac{(1-\phi_s(k))k}{(1-\phi_s(k))k+B_s(k)}
+=\frac{(1-\phi_s(k))k}{W^K_s(k)}.
+\tag{50}
+\end{equation}
+
+\subsubsection{Step 3: short rate schedule $r^f_s(k)$ (interior region)}
+Under the interior Merton condition, the optimal risky share satisfies
+\[
+\pi_s(k) = \frac{r^k_s(k)-r^f_s(k)}{\gamma(1-\tau_s)(\sigma^K_s(k))^2}.
+\]
+Imposing $\pi_s(k)=\pi^{mc}_s(k)$ yields the pointwise short rate:
+\begin{equation}
+r^f_s(k)
+=
+r^k_s(k) - \gamma(1-\tau_s)(\sigma^K_s(k))^2\,\pi^{mc}_s(k).
+\tag{51}
+\end{equation}
+Under this interior reduction, $r^f_s(k)$ depends on $(k,B_s(k),\phi_s(k))$ and primitives through
+$\pi^{mc}_s(k)$, and does not depend on $\Psi_s(k)$.
+
+\subsubsection{Step 4: transfers and the explicit drift closure for $\mu^k_s(k)$}
+Define the coefficient on $\mu^k_s(k)$ in the transfer residual by
+\begin{equation}
+\alpha_s(k) := B'_s(k) - k\phi'_s(k) - \phi_s(k),
+\tag{52}
+\end{equation}
+and define the remaining terms in transfers by
+\begin{equation}
+\beta_s(k)
+:=
+- r^f_s(k)B_s(k)
++ \phi_s(k)k\,r^k_s(k)
++ \tau_s\Big((1-\phi_s(k))k\,r^k_s(k) + r^f_s(k)B_s(k)\Big).
+\tag{53}
+\end{equation}
+Then transfers are affine in the drift:
+\begin{equation}
+T_s(k)=\alpha_s(k)\,\mu^k_s(k)+\beta_s(k).
+\tag{54}
+\end{equation}
+Workers consume hand-to-mouth:
+\[
+C^W_s(k)=w_s(k)+T_s(k),
+\]
+and capital owners consume
+\[
+C^K_s(k)=\omega_s(k)W^K_s(k),\qquad \omega_s(k)=\Psi_s(k)^{-1/\gamma}.
+\]
+Substituting $T_s(k)$ into the resource constraint yields an explicit drift formula:
+\begin{equation}
+\mu^k_s(k)
+=
+\frac{
+Y_s(k) - w_s(k) - \beta_s(k) - \omega_s(k)W^K_s(k) - \delta k - gk
+}{
+1+\alpha_s(k)
+}.
+\tag{55}
+\end{equation}
+This requires $1+\alpha_s(k)\neq 0$ on the solved domain; implement the diagnostic stated above.
+
+\subsubsection{Step 5: reduced HJB in $\Psi_s(k)$ and the certainty-equivalent return}
+Under the homothetic guess, $\omega_s(k)=\Psi_s(k)^{-1/\gamma}$. Maximising out $c$ and (under \eqref{A1})
+maximising out $\pi$ yields the reduced first-order equation:
+\begin{equation}
+0
+=
+\omega_s(k)^{1-\gamma}
++
+(1-\gamma)\Psi_s(k)\Big(\mathcal{R}_s(k)-\omega_s(k)\Big)
++
+\mu^k_s(k)\Psi'_s(k)
++
+\lambda_s\big(\Psi_1(k)-\Psi_s(k)\big)
+-
+\rho \Psi_s(k),
+\tag{56}
+\end{equation}
+where $\lambda_1=0$ and $\lambda_0=\lambda$.
+
+The certainty-equivalent return term $\mathcal R_s(k)$ collects (i) the after-tax drift of the portfolio
+return and (ii) the drift adjustment arising from the $V_{WW}$ term in the HJB (the idiosyncratic diffusion
+term). Evaluating the HJB at the unconstrained Merton share yields
+\begin{equation}
+\mathcal{R}_s(k)
+:=
+(1-\tau_s)r^f_s(k)
++
+\frac{\big(r^k_s(k)-r^f_s(k)\big)^2}{2\gamma(\sigma^K_s(k))^2}.
+\tag{57}
+\end{equation}
+
+\subsubsection{Step 6: discretisation, inflow boundaries, and boundary conditions}
+Equation (56) is first-order in $k$ through $\mu^k_s(k)\Psi'_s(k)$. Use an upwind difference based on the
+sign of $\mu^k_s(k)$:
+\[
+\Psi'_s(k_i)\approx
+\begin{cases}
+\dfrac{\Psi_s(k_i)-\Psi_s(k_{i-1})}{k_i-k_{i-1}}, & \mu^k_s(k_i)>0,\\[1.0em]
+\dfrac{\Psi_s(k_{i+1})-\Psi_s(k_i)}{k_{i+1}-k_i}, & \mu^k_s(k_i)<0.
+\end{cases}
+\]
+Boundary conditions are required only at \emph{inflow} boundaries, and inflow should be detected at each
+iteration because $\mu^k_s$ depends on the current iterate:
+\begin{itemize}
+\item if $\mu^k_s(k_{\min})>0$, then $k_{\min}$ is inflow and a boundary condition must be imposed there;
+\item if $\mu^k_s(k_{\max})<0$, then $k_{\max}$ is inflow and a boundary condition must be imposed there.
+\end{itemize}
+A stable choice at inflow boundaries is a Neumann condition $\Psi'_s=0$ (or $\ell'_s=0$ if solving in
+$\ell_s=\log\Psi_s$). Outflow boundaries require no condition under upwinding.
+
+To avoid selecting an economically spurious branch, choose $[k_{\min},k_{\max}]$ sufficiently wide and
+verify that in the converged solution the drift points inward at the boundaries:
+\[
+\mu^k_s(k_{\min})>0,\qquad \mu^k_s(k_{\max})<0,
+\]
+and confirm robustness by expanding the domain and checking that $\Psi_s$ is unchanged on an interior subset.
+
+\subsubsection{Step 7: solver (false transient) and order across regimes}
+Define the stationary residual operator $\mathcal{H}_s$ as the right-hand side of (56):
+\[
+\mathcal{H}_s(\Psi_0,\Psi_1)(k)
+:=
+\omega_s(k)^{1-\gamma}
++
+(1-\gamma)\Psi_s(k)\big(\mathcal{R}_s(k)-\omega_s(k)\big)
++
+\mu^k_s(k)\Psi'_s(k)
++
+\lambda_s(\Psi_1(k)-\Psi_s(k))
+-
+\rho \Psi_s(k).
+\]
+A simple explicit Euler false-transient update is
+\begin{equation}
+\Psi^{(n+1)}_s(k_i)
+=
+\Psi^{(n)}_s(k_i) + \Delta t \,\mathcal{H}_s\!\left(\Psi^{(n)}_0,\Psi^{(n)}_1\right)(k_i),
+\qquad i=1,\ldots,N.
+\tag{58}
+\end{equation}
+Because (58) is explicit, stability typically requires a CFL-type restriction linking $\Delta t$ to the
+grid spacing and $\max|\mu^k_s|$. In practice one may choose $\Delta t$ conservatively/adaptively or use a
+semi-implicit/implicit update; this is an implementation detail.
+
+The recommended solution order is:
+\begin{enumerate}
+\item Solve regime $s=1$ first (post-automation, $\lambda_1=0$).
+\item Solve regime $s=0$ second, taking $\Psi_1$ as given in the Poisson coupling term $\lambda(\Psi_1-\Psi_0)$.
+\end{enumerate}
+After solving, recover $\omega_s(k)=\Psi_s(k)^{-1/\gamma}$ and compute the jump factor
+\[
+\chi(k)=\left(\frac{\omega_1(k)}{\omega_0(k)}\right)^{-\gamma}.
+\]
+
+\subsection{Part II: constructing the full transition path in efficiency units}
+
+\subsubsection{Realised transition path (given a draw of the switch time)}
+Let $k_0>0$ be the initial capital stock in efficiency units and $s_0=0$. The regime-switch time
+$\tau$ is exponentially distributed with intensity $\lambda$. Conditional on a realised $\tau$, the
+capital stock evolves \emph{continuously} according to the deterministic ODE in each regime:
+\begin{equation}
+\dot k_t = \mu^k_0(k_t)\quad \text{for } t<\tau,
+\qquad
+\dot k_t = \mu^k_1(k_t)\quad \text{for } t\ge \tau,
+\qquad
+k_t \ \text{continuous at } t=\tau.
+\tag{59}
+\end{equation}
+Given the solved functions $\mu^k_s(\cdot)$, this is a standard initial-value problem. In practice,
+one computes $k_t$ by numerically integrating the ODE up to time $\tau$ under $\mu^k_0$, then continuing
+from $k_\tau$ under $\mu^k_1$.
+
+Along the realised path, every other aggregate is obtained by plug-in evaluation at $(s_t,k_t)$:
+\[
+r^f_t = r^f_{s_t}(k_t),\quad
+W^K_t = (1-\phi_{s_t}(k_t))k_t + B_{s_t}(k_t),\quad
+C^K_t = \omega_{s_t}(k_t)\,W^K_t,
+\]
+\[
+\alpha_t=\alpha_{s_t}(k_t),\quad \beta_t=\beta_{s_t}(k_t),\quad
+T_t = \alpha_t \mu^k_{s_t}(k_t)+\beta_t,\quad
+C^W_t = w_{s_t}(k_t)+T_t,
+\]
+and so on. The (state-dependent) jump factor can be tracked along the path via
+\[
+\chi(k_t)=\left(\frac{\omega_1(k_t)}{\omega_0(k_t)}\right)^{-\gamma}.
+\]
+
+\subsubsection{Expected transition path (averaging over the random switch time)}
+Often one wants the expected path of an aggregate $g_{s}(k)$ (e.g.\ expected consumption, transfers,
+or interest rates), where $g_s$ is a known function once the equilibrium objects have been solved.
+
+Let $\varphi_s(t;k)$ denote the flow map induced by the ODE $\dot k=\mu^k_s(k)$:
+\[
+\varphi_s(0;k)=k,
+\qquad
+\frac{d}{dt}\varphi_s(t;k)=\mu^k_s(\varphi_s(t;k)).
+\]
+Then, starting from $k_0$ in regime $0$, the expectation of $g_{s_t}(k_t)$ at horizon $t$ is
+\begin{equation}
+\mathbb E\big[g_{s_t}(k_t)\big]
+=
+e^{-\lambda t}\, g_0\!\big(\varphi_0(t;k_0)\big)
+\;+\;
+\int_0^t \lambda e^{-\lambda u}\,
+g_1\!\Big(\varphi_1(t-u;\ \varphi_0(u;k_0))\Big)\,du.
+\tag{60}
+\end{equation}
+The first term corresponds to the event that no switch has occurred by time $t$; the integral averages
+over switch times $u\in[0,t]$ with density $\lambda e^{-\lambda u}$, after which the system evolves in
+regime $1$ for duration $t-u$ starting from $k_\tau=\varphi_0(u;k_0)$.
+
+Numerically, one computes \eqref{60} by (i) precomputing the regime-wise ODE flows on a time grid and
+(ii) evaluating the integral by quadrature.
+
+\subsection{Diagnostics (equilibrium computation and transition path)}
+The following checks should be reported and enforced:
+\begin{enumerate}
+\item \textbf{Strict interior leverage feasibility:} $\pi^{mc}_s(k)\in(\underline\pi,\overline\pi)$ on the solved domain.
+\item \textbf{Non-singularity:} $1+\alpha_s(k)$ bounded away from zero.
+\item \textbf{Positivity:} $\Psi_s(k)>0$, $\omega_s(k)>0$, $W^K_s(k)>0$.
+\item \textbf{HJB residual:} $\max_i|\mathcal{H}_s(\Psi_0,\Psi_1)(k_i)|$ small for $s=0,1$.
+\item \textbf{Boundary drift check:} in the converged solution $\mu^k_s(k_{\min})>0$ and $\mu^k_s(k_{\max})<0$ (or expand the domain).
+\item \textbf{Transition-path sanity:} integrate \eqref{59} from representative initial conditions $k_0$ and verify the path remains in $[k_{\min},k_{\max}]$ over the simulated horizon (or expand the domain / extrapolate the solved functions carefully).
+\end{enumerate}
+
+% =========================
+% Ramsey / Markov-perfect planner section (Sections 1--3)
+% =========================
+% =========================
+% Section 5 (rewritten): Markov-perfect planner problem
+% Updates: hard inter-regime viability / no-default constraint + domain restriction
+% =========================
+
+
+% =========================
+% Section 5 (rewritten): Markov-perfect planner problem
+% Updates: hard inter-regime viability / no-default constraint + domain restriction
+% =========================
+
+\section{Markov-perfect planner problem}
+
+\subsection{Policy concept and timing}
+
+Time is continuous. The economy is in regime $s_t \in \{0,1\}$, where regime $0$ switches to regime $1$
+at an exogenous Poisson time $\tau$ with intensity $\lambda>0$. Regime $1$ is absorbing. Equivalently,
+conditional on $s_t=0$, the probability of switching in $(t,t+dt)$ is $\lambda\,dt+o(dt)$.
+
+We study a Markov-perfect (time-consistent) policy concept. The government chooses policy instruments as
+Markov feedback rules that depend only on the current regime and the current aggregate state:
+\[
+(\tau_t,T_t,H_t)=\big(\tau_{s_t}(k_t,L_t),\,T_{s_t}(k_t,L_t),\,H_{s_t}(k_t,L_t)\big).
+\]
+We allow these feedback rules to be discontinuous functions of $(k,L)$. The government re-optimises as the state
+evolves; there is no commitment to future policies and we do not introduce any promise-keeping (Euler-multiplier)
+state. Private agents form rational expectations over the government policy rule and behave optimally given that rule;
+equilibrium is defined as a fixed point between the policy rule and the induced competitive equilibrium objects.
+
+\paragraph{No fiscal impulses (carried state continuity).}
+We impose a ``no fiscal impulses'' admissibility condition: the \emph{continuous aggregate state variables}---physical
+capital $k_t$ and government net liabilities $L_t$---cannot jump at the regime switch:
+\[
+k_{\tau+}=k_{\tau-},\qquad L_{\tau+}=L_{\tau-}.
+\tag{28}
+\]
+Policy instruments are allowed to jump when the regime changes (because the policy rule switches from $s=0$ to $s=1$).
+In particular, we allow $H_{\tau+}\neq H_{\tau-}$. Since $B=L+H$, a jump in $H$ at $\tau$ implies a mechanical jump in
+gross debt $B$ at $\tau$ (instantaneous debt--equity rebalancing at fair value), while the carried fiscal stance $L$ remains
+continuous as imposed above.
+
+Conditional on a path of the regime indicator $(s_t)_{t\ge 0}$, the aggregate state evolves deterministically (the only
+aggregate uncertainty is the Poisson regime change).
+
+\subsection{States, instruments, and balance-sheet accounting}
+
+The aggregate state is $(s,k,L)$, where:
+\begin{itemize}[leftmargin=2em]
+\item $k\ge 0$ is the aggregate physical capital stock (installed capital);
+\item $L\in \mathbb{R}$ is government net liabilities.
+\end{itemize}
+
+The government issues risk-free instantaneous debt and holds equity claims on the aggregate
+capital income stream. Let:
+\begin{itemize}[leftmargin=2em]
+\item $B\ge 0$ denote government debt outstanding (a liability of the government and an asset
+of private capital owners);
+\item $H\in[0,k]$ denote the government's equity holdings (a claim on the capital income stream);
+\item $L$ denote government net liabilities,
+\begin{equation}
+L := B - H,
+\qquad\text{so that}\qquad
+B = L + H.
+\label{eq:MP_net_liabilities_def}
+\end{equation}
+\end{itemize}
+
+With this convention, private capital owners hold the residual equity claim $k-H$ and hold
+all government debt $B$. Their aggregate financial wealth therefore satisfies
+\begin{equation}
+W^K = (k-H)+B = k+L.
+\label{eq:MP_owners_wealth}
+\end{equation}
+Thus $H$ is a composition variable (public versus private ownership of the capital claim),
+while $L$ is the net fiscal stance that carries across time and, by \eqref{eq:MP_state_continuity},
+across regimes at the Poisson time.
+
+The government instruments are:
+\begin{itemize}[leftmargin=2em]
+\item $\tau\in[0,\bar\tau)$: a proportional capital-income tax rate;
+\item $T\ge \underline T$: transfers to workers (possibly allowing $\underline T<0$ to include lump-sum
+taxes on workers);
+\item $H\in[0,k]$: government equity position (equivalently, private equity supply $k-H$).
+\end{itemize}
+We take the bounds $[0,\bar\tau)$, $[\underline T,\infty)$, and $[0,k]$ as primitive restrictions.
+In addition, we impose a hard solvency / no-default admissibility constraint below.
+
+% =======================
+% REPLACE SECTION 5.3 WITH
+% =======================
+
+\subsection{Competitive equilibrium given a Markov policy rule}
+
+Fix a Markov policy rule $\{(\tau_s(\cdot),T_s(\cdot),H_s(\cdot))\}_{s\in\{0,1\}}$. A competitive equilibrium consists of (i) pricing objects, (ii) private decision rules, and (iii) aggregate laws of motion, such that markets clear and private agents optimise given the policy rule.
+
+\paragraph{Technology and factor prices.}
+In each regime $s$, output is $Y_s(k)$ and the wage and pre-tax rental (net payout) rate are $w_s(k)$ and $r^k_s(k)$.
+
+\paragraph{Market clearing for the risky claim.}
+Given government holdings $H$, private capital owners hold $k-H$ units of the risky capital claim and have aggregate wealth $W^K = k+L$. The market-clearing risky share of private wealth is
+\begin{equation}
+\pi^{mc}(k,L,H) \;=\; \frac{k-H}{k+L}.
+\tag{30}
+\end{equation}
+
+\paragraph{Tax convention and the risk-free rate schedule (NDL-only).}
+The tax rate $\tau$ applies to capital owners' realised income flows on (i) interest income from government debt and (ii) capital-claim payout income. Accordingly, $r^f_s(\cdot)$ is a \emph{pre-tax} short rate, while the after-tax short rate received by owners is $(1-\tau)\,r^f_s(\cdot)$.
+
+Under the natural debt limit (no-Ponzi / solvency admissibility) and \emph{without} exogenous portfolio constraints, the owners' portfolio choice satisfies the unconstrained Merton condition pointwise. Imposing market clearing $\pi=\pi^{mc}(k,L,H)$ yields a single-valued equilibrium short rate:
+\begin{equation}
+r^f_s(k,L;H,\tau)
+\;=\;
+r^k_s(k) \;-\; \gamma(1-\tau)\big(\sigma^K_s(k)\big)^2\,\pi^{mc}(k,L,H).
+\tag{31}
+\end{equation}
+This replaces the interior/binding-case distinction: on the admissible domain, $r^f_s$ is pinned down uniquely by \((31)\).
+
+\paragraph{Capital-owner block (Euler/HJB constraint).}
+Capital owners have CRRA preferences with coefficient $\gamma$ and behave optimally given the Markov policy rule. Using the homothetic reduction standard in this class of models, the owners' value function in regime $s$ takes the form
+\begin{equation}
+V^K_s(W;k,L) \;=\; \frac{W^{1-\gamma}}{1-\gamma}\,\Psi_s(k,L),
+\qquad W=k+L,
+\tag{32}
+\end{equation}
+for some reduced value function $\Psi_s(k,L)$. Define the owners' consumption--wealth ratio
+\begin{equation}
+\omega_s(k,L)=\Psi_s(k,L)^{-1/\gamma},
+\qquad
+C^K_s=\omega_s(k,L)\,(k+L).
+\tag{33}
+\end{equation}
+The function $\Psi_s$ (equivalently $\omega_s$) is pinned down by the owners' reduced HJB/PDE implied by their optimisation problem, with Poisson coupling term $\lambda(\Psi_1-\Psi_0)$ in regime $s=0$. We treat this reduced HJB/PDE as an equilibrium constraint induced by the policy rule.
+
+\paragraph{Workers and transfers.}
+Workers are hand-to-mouth and consume current income:
+\begin{equation}
+C^W_s = w_s(k)+T.
+\tag{34}
+\end{equation}
+
+\paragraph{Aggregate resource constraint and capital accumulation.}
+Given \((33)\)--\((34)\), aggregate capital evolves according to
+\begin{equation}
+\dot{k}
+=
+Y_s(k)
+-\big(w_s(k)+T\big)
+-\omega_s(k,L)(k+L)
+-(\delta+g)k.
+\tag{35}
+\end{equation}
+
+\paragraph{Net-liability dynamics.}
+Let $B=L+H$ as in \((28)\). Under the baseline tax convention, net liabilities evolve as
+\begin{equation}
+\dot{L}
+=
+r^f_s(k,L;H,\tau)\,(L+H)
++T
+-H\,r^k_s(k)
+-\tau\Big( (k-H)r^k_s(k)+r^f_s(k,L;H,\tau)(L+H)\Big).
+\tag{36}
+\end{equation}
+
+\paragraph{Equilibrium mapping (defined on the admissible domain).}
+Equations \((30)\)--\((36)\), together with the reduced owner HJB/PDE that pins down $\Psi_s$ (and hence $\omega_s$), define an equilibrium mapping from the current state and policy instruments to the induced deterministic drift and pricing objects:
+\[
+(s,k,L;\tau,T,H)\;\mapsto\;\big(\dot{k},\dot{L},r^f_s,\omega_s\big),
+\]
+on the domain of states and controls satisfying the hard solvency / no-default admissibility restrictions stated below.
+
+\subsection{Hard solvency (no default ever) and inter-regime viability}
+
+We impose a hard admissibility restriction: the government never defaults, pathwise. This restriction is encoded as a
+state constraint on $(k,L)$.
+
+\paragraph{Primitive solvency/feasibility set.}
+Let $S\subset \mathbb R_+\times \mathbb R$ be a \emph{closed} set collecting primitive feasibility restrictions (government
+feasibility and the domain restrictions required for the equilibrium block). To ensure $S$ is closed, we encode basic
+restrictions using weak inequalities. For example, $S$ can encode: (i) $k\ge 0$; (ii) $k+L\ge 0$; (iii) $L\ge -k$
+(so there exists $H\in[0,k]$ satisfying $B=L+H\ge 0$); and (iv) any additional restrictions required for the competitive
+equilibrium mapping to be well-defined.
+
+While CRRA/log utilities are defined on the strictly positive domain, the mathematical control problem is posed on the
+closed set $S$ and the boundary is handled explicitly by the state-constraint condition: admissible controls are restricted
+(at boundary points) to those with inward-pointing/tangent drift. Under admissible policies, the state therefore remains
+in the economically relevant interior (consumption strictly positive) along the realised path.
+
+\paragraph{Within-regime (isolated) viability kernels.}
+Fix admissible instrument bounds and consider the equilibrium-induced deterministic drift in each regime. For each
+$s\in\{0,1\}$, define the within-regime viability kernel $\widetilde V_s\subseteq S$ as the set of states $(k,L)\in S$
+from which there exists an admissible Markov feedback control for the \emph{isolated} regime-$s$ dynamics such that the
+induced deterministic state path remains in $S$ for all future times.
+
+\paragraph{Effective pre-switch admissible set.}
+Because the regime may switch at any instant and $(k,L)$ is continuous at the switch, admissibility in regime $0$ requires
+robustness to an arbitrarily early switch. Accordingly, define
+\[
+V_0^{\mathrm{pre}}:=\widetilde V_0\cap \widetilde V_1.
+\tag{38}
+\]
+For notational simplicity in what follows, write $V_1:=\widetilde V_1$ and $V_0:=V_0^{\mathrm{pre}}$ when posing the planner
+problem on its admissible domain.
+
+% =========================
+% Section 5 (continued): Planner problem (Markov-perfect) + HJBs + MPE definition
+% Blocks 1--5
+% =========================
+
+% ============================================================
+% §5.5–§5.9 (revised): Markov-perfect planner payoff, admissibility,
+% state-constrained HJBs, and MPE definition
+% Patches:
+% (i) χ used as worker population share (micro-paper convention);
+% (ii) clarify owner welfare aggregation (representative-owner);
+% (iii) make ω and r^f policy-induced in notation/words;
+% (iv) make feasibility restrictions inside S operational (L ≥ -k, k+L>0, C^W>0);
+% (v) signal viscosity/state-constraint interpretation.
+% ============================================================
+
+\subsection{Planner objective}\label{subsec:planner_objective}
+
+The government evaluates allocations using a utilitarian objective that aggregates workers'
+and owners' flow utilities using the \emph{population-share} weight $\chi\in(0,1)$ on workers
+(as in the automation micro-foundations). The flow payoff in regime $s$ is
+\begin{equation}
+U_s(k,L;\tau,T,H)
+\;:=\;
+\chi\,u^W\!\big(C^W_s(k,L;\tau,T,H)\big)
+\;+\;
+(1-\chi)\,u^K\!\big(C^K_s(k,L;\tau,T,H)\big).
+\label{eq:MP_planner_flow_payoff_revised}
+\end{equation}
+Workers consume current income,
+\begin{equation}
+C^W_s(k,L;\tau,T,H)=w_s(k)+T.
+\label{eq:MP_workers_cons_revised}
+\end{equation}
+
+Owners' consumption is characterised by the private equilibrium block. Using the homothetic
+reduction in \eqref{eq:MP_homothetic}--\eqref{eq:MP_omega_def}, aggregate owner consumption is
+\begin{equation}
+C^K_s(k,L;\tau,T,H)=\omega_s(k,L)\,(k+L).
+\label{eq:MP_owners_cons_revised}
+\end{equation}
+In this paper, the planner evaluates owner welfare using the representative-owner aggregation
+implied by \eqref{eq:MP_owners_cons_revised}. That is, the planner applies $u^K(\cdot)$ to
+aggregate owner consumption and abstracts from within-owner distributional welfare effects.
+
+Crucially, $\omega_s(\cdot)$ (and the equilibrium safe rate $r^f_s(\cdot)$) is \emph{policy-induced}:
+it is pinned down by the competitive equilibrium block given the government's Markov behaviour.
+To keep notation light, we write $\omega_s(k,L)$, but its dependence on the policy rule is implicit
+and enters the planner problem through the equilibrium mapping.
+
+Let $\rho>0$ denote the government's discount rate. The government's value function in regime $s$ is
+\begin{equation}
+J_s(k,L)
+\;:=\;
+\sup_{\{\tau_t,T_t,H_t\}}
+\mathbb E\Bigg[\int_0^\infty e^{-\rho t}\,
+U_{s_t}\big(k_t,L_t;\tau_t,T_t,H_t\big)\,dt
+\ \Big|\ s_0=s,\ (k_0,L_0)=(k,L)\Bigg],
+\label{eq:MP_planner_value_def_revised}
+\end{equation}
+where the expectation is only over the Poisson switching time (conditional on a regime path,
+the aggregate state evolves deterministically).
+
+\subsection{Admissible controls and the hard state constraint}
+
+At each state $(s,k,L)$, the government chooses controls $u=(\tau,T,H)$ from an admissible set $U_s(k,L)$.
+
+\paragraph{Primitive bounds.}
+We impose the primitive bounds
+\[
+\tau\in[0,\bar\tau),\qquad T\in[\underline T,\infty),\qquad H\in[0,k].
+\]
+
+\paragraph{State-feasibility and budget-feasibility restrictions.}
+The government debt outstanding is $B=L+H$, with $B\ge 0$ and $H\in[0,k]$. Hence at a given state $(k,L)$, feasibility
+requires that there exists $H\in[0,k]$ such that $L+H\ge 0$, which is equivalent to
+\[
+L\ge -k.
+\tag{44}
+\]
+Moreover, owner wealth is $W^K=k+L$ (see (30)). To maintain a closed state space we impose the weak inequality
+\[
+k+L\ge 0,
+\tag{45}
+\]
+with the understanding (stated in Section 5.4) that admissibility/state constraints keep the state away from boundary
+points where consumption would be zero.
+
+Finally, to ensure worker consumption is in the domain of $u^W$ (e.g. for CRRA/log), we impose $C^W_s=w_s(k)+T>0$.
+Operationally, we encode this by a state-dependent lower bound on transfers:
+\[
+T\ge T_s(k):=\max\{\underline T,\,-w_s(k)+\varepsilon\},\qquad \varepsilon>0\ \text{small}.
+\tag{46}
+\]
+
+Given (44)–(46), it is convenient to write the control set directly as
+\[
+U_s(k,L):=\Big\{(\tau,T,H):\ \tau\in[0,\bar\tau),\ T\in[T_s(k),\infty),\ H\in[\max\{0,-L\},\,k]\Big\}.
+\tag{47}
+\]
+
+\paragraph{Equilibrium-induced drift mapping.}
+Given a choice $u\in U_s(k,L)$, the competitive equilibrium block induces a deterministic drift
+\[
+(\dot k,\dot L)=f_s(k,L;u),
+\]
+where $\dot k$ and $\dot L$ are given by (36) and (37). The mapping $f_s$ depends on equilibrium objects (notably $r^f_s$
+and $\omega_s$) that are induced by the anticipated Markov policy rule; see Section 5.9.
+
+\paragraph{Hard no-default constraint and inward feasibility.}
+Admissibility requires that the induced state path remains in the primitive solvency set $S$ pathwise, and (in regime 0)
+remains in the effective pre-switch admissible domain $V_0=V_0^{\mathrm{pre}}$.
+
+To encode the state constraint in the HJB, we restrict controls on the boundary of $V_s$ to those whose induced drift is
+inward/tangent. Formally, for each $s$ and each $x=(k,L)\in\partial V_s$, define
+\[
+U^{\mathrm{in}}_s(x):=\big\{u\in U_s(x): f_s(x;u)\in T_{V_s}(x)\big\},
+\tag{48}
+\]
+where $T_{V_s}(x)$ denotes the Bouligand tangent cone of $V_s$ at $x$. For $x$ in the interior of $V_s$, take
+$U^{\mathrm{in}}_s(x)=U_s(x)$.
+
+\subsection{Planner HJB in regime 1 (absorbing)}\label{subsec:HJB_regime1}
+
+In regime $1$ (absorbing), the planner's value function solves the state-constrained HJB on $\mathcal V_1$:
+\begin{equation}
+\rho\,J_1(k,L)
+\;=\;
+\sup_{u\in \mathcal U^{in}_1(k,L)}
+\Big\{
+U_1(k,L;u)
++
+J_{1k}(k,L)\,\dot k_1(k,L;u)
++
+J_{1L}(k,L)\,\dot L_1(k,L;u)
+\Big\},
+\qquad (k,L)\in \mathcal V_1.
+\label{eq:MP_HJB_regime1_revised}
+\end{equation}
+Here $(\dot k_1,\dot L_1)=f_1(k,L;u)$ is the equilibrium-induced drift in regime $1$.
+
+\paragraph{Regularity.}
+Because we allow discontinuous optimal feedback and impose a hard state constraint, we interpret
+\eqref{eq:MP_HJB_regime1_revised} as a state-constrained HJB in the viscosity sense. Derivatives are
+written formally, and the state-constraint boundary condition is implemented via $\mathcal U^{in}_1(\cdot)$.
+
+\subsection{Planner HJB in regime 0 with Poisson coupling}\label{subsec:HJB_regime0}
+
+In regime $0$, the planner anticipates a Poisson switch to regime $1$ with intensity $\lambda$.
+Because $(k,L)$ is continuous at the switch, the continuation value upon switching is $J_1(k,L)$
+evaluated at the same state. The state-constrained HJB in regime $0$ on $\mathcal V_0$ is
+\begin{equation}
+\rho\,J_0(k,L)
+\;=\;
+\sup_{u\in \mathcal U^{in}_0(k,L)}
+\Big\{
+U_0(k,L;u)
++
+J_{0k}(k,L)\,\dot k_0(k,L;u)
++
+J_{0L}(k,L)\,\dot L_0(k,L;u)
++
+\lambda\big(J_1(k,L)-J_0(k,L)\big)
+\Big\},
+\qquad (k,L)\in \mathcal V_0.
+\label{eq:MP_HJB_regime0_revised}
+\end{equation}
+Admissibility in regime $0$ includes the hard inter-regime solvency restriction: since $\mathcal V_0\subseteq\mathcal V_1$,
+any state on which \eqref{eq:MP_HJB_regime0_revised} is posed is automatically post-switch viable.
+
+% =======================
+% REPLACE SECTION 5.9 WITH
+% =======================
+
+\subsection{Markov-perfect equilibrium}
+
+A Markov-perfect equilibrium (MPE) consists of:
+\begin{enumerate}
+\item planner value functions $(J_0,J_1)$ defined on $(V_0,V_1)$;
+\item government Markov feedback strategies $u_s(\cdot)=(\tau_s(\cdot),T_s(\cdot),H_s(\cdot))$ for $s\in\{0,1\}$;
+\item competitive equilibrium objects in each regime, including $r^f_s(\cdot)$, $\Psi_s(\cdot)$, and $\omega_s(\cdot)$, and induced drifts $(\dot k_s,\dot L_s)$,
+\end{enumerate}
+such that:
+
+\begin{enumerate}
+\item[(i)] \textbf{Private-block optimality and market clearing (implementability).}
+Given the government strategies $\{u_s(\cdot)\}_{s\in\{0,1\}}$, the competitive equilibrium objects satisfy the equilibrium mapping of Section~5.3: market clearing \eqref{30}, the safe-rate schedule \eqref{31} (NDL-only, hence single-valued on the admissible domain), the owners' reduced HJB/PDE determining $\Psi_s$ (and hence $\omega_s$), and the aggregate drift equations \eqref{35}--\eqref{36}. In particular, the objects
+\[
+\big(r^f_s,\ \omega_s,\ \dot k_s,\ \dot L_s\big)
+\]
+are induced by the policy rule through this equilibrium mapping.
+
+\item[(ii)] \textbf{Planner optimality (time consistency).}
+Given the induced equilibrium mapping, $(J_0,J_1)$ solve the state-constrained HJB system \eqref{41}--\eqref{42}. Moreover, the strategies $\{u_s(\cdot)\}$ attain the pointwise suprema in \eqref{41} and \eqref{42} (as measurable selections), so that at every state $(s,k,L)$ the government chooses a best response.
+
+\item[(iii)] \textbf{Hard admissibility (no default ever).}
+Under the induced state dynamics, the state remains in the solvency/feasibility set pathwise and satisfies the hard inter-regime viability restriction (including $V_0\subseteq V_1$ and the primitive feasibility restrictions defining admissibility). Equivalently, the induced drift respects the state constraint encoded by $U^{in}_s(\cdot)$ and the state process remains in $V_s$ for all times.
+\end{enumerate}
+
+In what follows, we solve for an MPE by computing the viability sets and then solving the coupled private-block and planner HJB system on $(V_0,V_1)$.
+
+\section{Markov planner propositions}
+
+% ============================================================
+% Block 1 — Primitive feasibility vs (within-regime) viability
+% Updated to remove the V0 vs V1 definitional collision:
+% - define within-regime (isolated ODE) viability kernels
+% - define the effective pre-switch admissible set as an intersection
+% ============================================================
+
+\subsection{Primitive feasibility and viability kernels}
+
+We impose ``no default ever'' as a hard state constraint. To do so, we distinguish primitive feasibility restrictions
+from the associated viability kernels.
+
+\paragraph{Primitive solvency/feasibility set.}
+Let $S\subset\mathbb R_+\times\mathbb R$ be a \emph{closed} set collecting primitive constraints required for feasibility
+and for the utility/equilibrium domains. To ensure $S$ is closed, we use weak inequalities (e.g. $k\ge 0$, $k+L\ge 0$,
+$L\ge -k$, plus any additional restrictions needed for the equilibrium mapping). Although CRRA/log utilities are defined
+only on the strict interior, the control problem is posed on the closed set $S$ and the boundary is handled via the
+state-constraint condition; admissible controls keep the drift inward/tangent so that the state never reaches points
+where consumption would be zero along admissible trajectories.
+
+\paragraph{Within-regime viability kernels (isolated dynamics).}
+Fix admissible control bounds and the equilibrium-induced deterministic drift in regime $s$. For each $s\in\{0,1\}$, define
+the within-regime viability kernel $\widetilde V_s\subseteq S$ as the set of states $(k,L)\in S$ such that there exists an
+admissible Markov feedback control for the \emph{isolated} regime-$s$ dynamics under which the induced deterministic state
+path remains in $S$ for all $t\ge 0$.
+
+\paragraph{Effective pre-switch admissible region.}
+In regime 0 with Poisson switching to regime 1, admissibility requires robustness to an arbitrarily early switch. Define
+\[
+V_0^{\mathrm{pre}}:=\widetilde V_0\cap \widetilde V_1.
+\tag{51}
+\]
+For notational simplicity, in what follows write $V_1:=\widetilde V_1$ and $V_0:=V_0^{\mathrm{pre}}$.
+
+\paragraph{Lemma 1 (Intersection viability pre-switch; measure caveat).}
+Assume: (i) one-way switching $0\to 1$ with intensity $\lambda>0$; (ii) $(k_t,L_t)$ continuous at $\tau$; and (iii) no default
+ever is imposed pathwise (i.e. $(k_t,L_t)\in S$ for all $t\ge 0$ on every realisation). Then any admissible pre-switch path must
+satisfy $(k_t,L_t)\in \widetilde V_0\cap \widetilde V_1$ for all $t<\tau$, in the precise sense that spending positive Lebesgue-measure
+time outside $\widetilde V_1$ violates no-default. (Proof as in the draft.)
+% ============================================================
+% Block 2 — State-constrained HJB (correct one-way switching)
+% Notation consistent with Block 1 updates:
+% - Primitive solvency set: S
+% - Within-regime kernels: \widetilde{\mathcal V}_s
+% - Effective pre-switch set: \mathcal V_0^{\mathrm{pre}} := \widetilde{\mathcal V}_0 \cap \widetilde{\mathcal V}_1
+% - For notational simplicity in HJB statements: \mathcal V_1 := \widetilde{\mathcal V}_1 and \mathcal V_0 := \mathcal V_0^{\mathrm{pre}}
+% - One-way switching: only 0->1 with intensity \lambda; regime 1 absorbing (no term in J_1 HJB)
+% ============================================================
+
+% ============================================================
+% Main text block: State-constrained HJB characterisation (PDMP, one-way switching)
+% ============================================================
+\subsection{State-constrained HJB characterisation}
+
+The planner imposes the hard no-default constraint that the aggregate state remains in the primitive solvency set $S$
+pathwise. As in Section 6.1, we pose the planner problem on the admissible domains
+\[
+V_1:=\widetilde V_1,\qquad V_0:=V_0^{\mathrm{pre}}=\widetilde V_0\cap \widetilde V_1,
+\]
+and the regime-switching process is one-way: $0\to 1$ occurs with intensity $\lambda>0$ and regime 1 is absorbing.
+
+Let $x=(k,L)$ denote the continuous state. Fix an anticipated Markov rule $\hat u(\cdot)$ and let the competitive equilibrium
+block under $\hat u(\cdot)$ induce (i) a drift mapping $f_s^{\hat u}(x;u)$ and (ii) a flow payoff $U_s^{\hat u}(x;u)$ for
+pointwise control choices $u=(\tau,T,H)\in U_s(x)$. (These objects are equilibrium-induced and depend on the anticipated rule;
+in equilibrium $\hat u=u$; see Section 6.3.)
+
+\paragraph{}
+
+Because we allow discontinuous Markov feedback rules and anticipate corner/bang-bang solutions, the planner value functions
+need not be everywhere differentiable. Following standard results on optimal control with state constraints, the value functions
+are characterised as constrained viscosity solutions of the following state-constrained HJB system; see Fleming and Soner (2006,
+Section II.12).\footnote{Our tangent-cone formulation is equivalent to the state-constraint boundary inequality formulation in
+Fleming and Soner (2006, Section II.12). See Online Appendix A for a brief translation.}
+
+\paragraph{Interior.}
+For $x$ in the interior of the admissible domain, the HJB equations are
+\[
+\rho J_1(x)=\sup_{u\in U_1(x)}\Big\{U_1^{\hat u}(x;u)+\nabla J_1(x)\cdot f_1^{\hat u}(x;u)\Big\},
+\qquad x\in \mathrm{int}(V_1),
+\tag{52}
+\]
+\[
+\rho J_0(x)=\sup_{u\in U_0(x)}\Big\{U_0^{\hat u}(x;u)+\nabla J_0(x)\cdot f_0^{\hat u}(x;u)+\lambda\big(J_1(x)-J_0(x)\big)\Big\},
+\qquad x\in \mathrm{int}(V_0).
+\tag{53}
+\]
+The Poisson coupling term appears only in regime 0; regime 1 is absorbing.
+
+\paragraph{Boundary (state constraint).}
+On the boundary $x\in\partial V_s$, admissibility restricts the planner to controls whose induced drift keeps the state within
+$V_s$. Let $T_{V_s}(x)$ denote the Bouligand tangent cone of $V_s$ at $x$. Define the inward-feasible correspondence
+\[
+U^{\mathrm{in}}_s(x):=\big\{u\in U_s(x): f_s^{\hat u}(x;u)\in T_{V_s}(x)\big\}.
+\]
+The state-constrained HJB is obtained by replacing $U_s(x)$ with $U^{\mathrm{in}}_s(x)$ at boundary points.
+
+\paragraph{Solution concept.}
+We interpret (52)–(53) as a state-constrained HJB system in the viscosity sense, with boundary restriction implemented via
+$U^{\mathrm{in}}_s(\cdot)$.
+
+
+% ============================================================
+% Block 3 — MPE fixed point (replaces commitment-sounding Lemma 3)
+% (from Proposition plan 5.0)
+% ============================================================
+
+\subsection{Markov-perfect equilibrium as a fixed point}\label{subsec:block3_mpe_fixed_point}
+
+In a Markov-perfect environment the planner lacks commitment: at each state it chooses current
+controls, taking private-sector forward-looking objects (pinned down by the anticipated policy rule)
+as given. The overall equilibrium is therefore a fixed point in the space of Markov rules.
+
+\begin{lemma}[MPE fixed point: pointwise best response and consistency]\label{lem:MPE_fixed_point}
+A Markov-perfect equilibrium (MPE) is a fixed point in the space of Markov feedback rules.
+
+\begin{enumerate}[leftmargin=2em,label=\arabic*.]
+\item \textbf{Private block given an anticipated rule.}
+For any anticipated Markov rule $\widehat u(\cdot)=\{\widehat u_s(\cdot)\}_{s\in\{0,1\}}$, where
+$\widehat u_s(k,L)=(\widehat\tau_s(k,L),\widehat T_s(k,L),\widehat H_s(k,L))$ on the admissible domain,
+the competitive equilibrium block delivers induced objects
+\[
+(\widehat r^f_s,\widehat\omega_s,\widehat f_s),
+\qquad s\in\{0,1\},
+\]
+where $\widehat r^f_s(k,L)$ is the (pre-tax) safe-rate schedule, $\widehat\omega_s(k,L)$ is the owners'
+consumption--wealth ratio, and $\widehat f_s(k,L;u)$ is the equilibrium-induced drift mapping
+for the continuous state $x=(k,L)$ in regime $s$, all consistent with private optimisation and market clearing.
+
+\item \textbf{Planner pointwise best response.}
+Given the induced objects from $\widehat u(\cdot)$, the planner solves a pointwise state-constrained HJB
+at each state $(s,k,L)$, taking $(\widehat r^f_s,\widehat\omega_s,\widehat f_s)$ as given inside the
+Hamiltonian maximisation, and obtains a best-response Markov rule $u^*(\cdot)$.
+
+\item \textbf{Fixed point.}
+An MPE is a Markov rule $u(\cdot)$ such that $u(\cdot)=u^*(\cdot)$ when $\widehat u(\cdot)=u(\cdot)$.
+Equivalently, the rule anticipated by private agents coincides with the rule generated by the planner's
+state-by-state best response, and the induced equilibrium objects coincide with those used in the planner's
+HJB characterisation.
+\end{enumerate}
+\end{lemma}
+
+\begin{remark}
+Lemma \ref{lem:MPE_fixed_point} rules out any ``commitment'' interpretation: the planner does not choose a
+complete future policy path at time $0$. Rather, the equilibrium policy is defined by a consistency condition
+between (i) private-sector optimisation given an anticipated Markov rule and (ii) the planner's pointwise best
+responses in the associated state-constrained HJB.
+\end{remark}
+
+% ============================================================
+% Block 4 — EIS threshold (portable form)
+% (from Proposition plan 5.0)
+% ============================================================
+
+\subsection{EIS threshold under induced schedules}\label{subsec:block4_EIS}
+
+\begin{lemma}[Saving response under induced schedules]\label{lem:EIS_induced}
+Fix an anticipated Markov rule $\widehat u(\cdot)$ and the corresponding induced competitive-equilibrium objects
+(in particular, the after-tax return schedules that enter the private saving problem). Consider a parametric
+perturbation of primitives that shifts the induced after-tax return schedule \emph{downward pointwise}, holding the
+functional form of the anticipated rule $\widehat u(\cdot)$ fixed. Then the sign of the saving response flips at
+$\mathrm{EIS}=1$ (log knife-edge): for $\mathrm{EIS}>1$ the substitution effect dominates (lower induced returns reduce
+saving), while for $\mathrm{EIS}<1$ the income/wealth effect dominates (lower induced returns raise saving).
+\end{lemma}
+
+\begin{remark}
+Lemma \ref{lem:EIS_induced} is stated in a form that is portable to a Markov-perfect environment: the perturbation is
+a change in primitives that moves the \emph{induced} return schedules under a fixed anticipated rule, rather than an
+``announcement'' of future taxes by a committed planner. In the main propositions, we use Lemma \ref{lem:EIS_induced}
+to sign how anticipated regime changes or policy-induced return shifts affect pre-switch saving and thus the carried
+state $(k_\tau,L_\tau)$.
+\end{remark}
+
+% ============================================================
+% Lemma DWL-H — Convex marginal Hamiltonian cost of contemporaneous tax revenue
+% (Block 5)
+% ============================================================
+
+\subsection{Convexity of the marginal deadweight loss of capital taxation}\label{subsec:lemma_DWLH}
+
+Fix a regime $s\in\{0,1\}$ and an interior state $x=(k,L)\in\mathrm{int}(V_s)$. Let $\hat u(\cdot)$ denote an
+anticipated Markov rule, so that the competitive equilibrium block induces (possibly rule-dependent) objects.
+Let $p:=\nabla J_s(x)=(J_{sk}(x),J_{sL}(x))$ denote the local costate vector at $x$, treated as fixed numbers in the
+planner's pointwise maximisation. Under the best-response operator conditional on $\hat u$ and evaluated at the current
+state $x$, the Poisson coupling term $\lambda(J_1(x)-J_0(x))$ (when $s=0$) is independent of the pointwise control choice
+and therefore does not affect the argmax over controls.
+
+For any pointwise choice $u=(\tau,T,H)$ at $x$, define the equilibrium-induced objects under $\hat u$:
+\[
+\mathcal U_s^{\hat u}(x;u)
+\quad\text{(flow welfare)},\qquad
+f_s^{\hat u}(x;u)=(\dot k,\dot L)
+\quad\text{(state drift)},\qquad
+\mathcal B_s^{\hat u}(x;u)
+\quad\text{(tax base)},
+\]
+and the local contemporaneous revenue (current-period flow)
+\[
+\mathcal R_s^{\hat u}(x;u):=\tau\,\mathcal B_s^{\hat u}(x;u).
+\]
+Define the pointwise Hamiltonian at costate $p$:
+\[
+\mathcal H_s^{\hat u}(x;u;p):=\mathcal U_s^{\hat u}(x;u)+p\cdot f_s^{\hat u}(x;u).
+\]
+
+Let $\mathcal A(x)$ denote the pointwise feasible set for $(T,H)$ at state $x$ (including instrument bounds and feasibility).
+For each $\tau$ in a neighbourhood, define the induced adjustment of $(T,H)$ via the Hamiltonian:
+\[
+\big(T_s^{\hat u,p}(\tau;x),\,H_s^{\hat u,p}(\tau;x)\big)\in
+\arg\max_{(T,H)\in\mathcal A(x)} \ \mathcal H_s^{\hat u}\big(x;(\tau,T,H);p\big).
+\]
+Define the indirect Hamiltonian and indirect base at $x$:
+\begin{align*}
+\widetilde{\mathcal H}_s^{\hat u,p}(\tau;x)
+&:=\max_{(T,H)\in\mathcal A(x)} \ \mathcal H_s^{\hat u}\big(x;(\tau,T,H);p\big),\\
+\widetilde{\mathcal B}_s^{\hat u,p}(\tau;x)
+&:=\mathcal B_s^{\hat u}\big(x;(\tau,T_s^{\hat u,p}(\tau;x),H_s^{\hat u,p}(\tau;x))\big),\\
+\widetilde{\mathcal R}_s^{\hat u,p}(\tau;x)
+&:=\tau\,\widetilde{\mathcal B}_s^{\hat u,p}(\tau;x).
+\end{align*}
+
+\begin{lemma}[Convex marginal Hamiltonian cost of contemporaneous revenue]\label{lem:DWLH}
+Fix $(s,x,\hat u,p)$ as above. Let $[\underline\tau,\overline\tau]\subset[0,\bar\tau)$ be a closed interval such that:
+\begin{enumerate}[leftmargin=2em,label=(A\arabic*)]
+\item $\widetilde{\mathcal H}_s^{\hat u,p}(\cdot;x)$ and $\widetilde{\mathcal B}_s^{\hat u,p}(\cdot;x)$ are $C^2$ on
+      $[\underline\tau,\overline\tau]$ (or, equivalently, we restrict attention to a $C^2$ subinterval where the argmax selection is stable);
+\item $\partial_\tau \widetilde{\mathcal R}_s^{\hat u,p}(\tau;x)>0$ for all $\tau\in[\underline\tau,\overline\tau]$ (revenue-increasing region);
+\item $\partial_\tau \widetilde{\mathcal B}_s^{\hat u,p}(\tau;x)\le 0$ and $\partial^2_{\tau\tau}\widetilde{\mathcal B}_s^{\hat u,p}(\tau;x)\le 0$
+      for all $\tau\in[\underline\tau,\overline\tau]$ (base weakly decreasing and concave);
+\item $\partial_\tau \widetilde{\mathcal H}_s^{\hat u,p}(\tau;x)\le 0$ and $\partial^2_{\tau\tau}\widetilde{\mathcal H}_s^{\hat u,p}(\tau;x)\le 0$
+      for all $\tau\in[\underline\tau,\overline\tau]$ (Hamiltonian weakly decreasing and concave).
+\end{enumerate}
+Define the marginal Hamiltonian cost per unit marginal revenue:
+\[
+MC_{H,s}^{\hat u,p}(\tau;x)
+:=
+-\frac{\partial_\tau \widetilde{\mathcal H}_s^{\hat u,p}(\tau;x)}
+{\partial_\tau \widetilde{\mathcal R}_s^{\hat u,p}(\tau;x)}.
+\]
+Then $MC_{H,s}^{\hat u,p}(\tau;x)$ is weakly increasing in $\tau$ on $[\underline\tau,\overline\tau]$, i.e.
+\[
+\partial_\tau MC_{H,s}^{\hat u,p}(\tau;x)\ge 0
+\qquad\forall \tau\in[\underline\tau,\overline\tau].
+\]
+\end{lemma}
+
+\begin{proof}
+Suppress the indices $(s,\hat u,p,x)$ for readability. By definition,
+$\widetilde{\mathcal R}(\tau)=\tau\,\widetilde{\mathcal B}(\tau)$, hence
+\[
+\widetilde{\mathcal R}_\tau(\tau)=\widetilde{\mathcal B}(\tau)+\tau\,\widetilde{\mathcal B}_\tau(\tau),
+\qquad
+\widetilde{\mathcal R}_{\tau\tau}(\tau)=2\,\widetilde{\mathcal B}_\tau(\tau)+\tau\,\widetilde{\mathcal B}_{\tau\tau}(\tau)\le 0
+\]
+by (A3). Since $\widetilde{\mathcal R}_\tau>0$ on the interval by (A2), the quotient is well-defined.
+
+Differentiate $MC_H(\tau)=-\widetilde{\mathcal H}_\tau(\tau)/\widetilde{\mathcal R}_\tau(\tau)$:
+\[
+(MC_H)_\tau(\tau)
+=
+-\frac{\widetilde{\mathcal H}_{\tau\tau}(\tau)\,\widetilde{\mathcal R}_\tau(\tau)
+-\widetilde{\mathcal H}_\tau(\tau)\,\widetilde{\mathcal R}_{\tau\tau}(\tau)}
+{\widetilde{\mathcal R}_\tau(\tau)^2}.
+\]
+On $[\underline\tau,\overline\tau]$, (A2) implies $\widetilde{\mathcal R}_\tau>0$; (A4) implies $\widetilde{\mathcal H}_{\tau\tau}\le 0$ and
+$\widetilde{\mathcal H}_\tau\le 0$; and we have shown $\widetilde{\mathcal R}_{\tau\tau}\le 0$. Therefore
+$-\widetilde{\mathcal H}_\tau\,\widetilde{\mathcal R}_{\tau\tau}\ge 0$ and $-\widetilde{\mathcal H}_{\tau\tau}\,\widetilde{\mathcal R}_\tau\ge 0$,
+so the numerator is weakly nonnegative. Hence $(MC_H)_\tau\ge 0$ on the interval.
+\end{proof}
+
+\begin{remark}[Equilibrium evaluation and use]
+Lemma \ref{lem:DWLH} is conditional on $(\hat u,p)$: an anticipated rule $\hat u(\cdot)$ and costates $p=\nabla J_s(x)$ at state $x$.
+In Markov-perfect equilibrium we evaluate the lemma at the fixed point $\hat u=u$ with $p=\nabla J_s(x)$.
+The lemma is used as an input to Proposition A1 (tax smoothing) and Proposition C1 (financing share) by providing a local
+convexity property of the planner's pointwise revenue-raising tradeoff in the HJB.
+\end{remark}
+
+% =========================================================
+% REPLACE §6.6 WITH THIS BLOCK (MODE A; CLARIFIED LABELS)
+% =========================================================
+
+\subsection{Shadow-value / MVPF decomposition (Mode A)}
+
+\begin{lemma}[Decomposition of $\mu_s=-J_{sL}$ under the Mode-A transfer margin]\label{lem:MU-3term-final}
+Fix a regime $s\in\{0,1\}$ and an interior state $x=(k,L)\in\mathrm{int}(V_s)$.
+Fix an anticipated rule $\hat u(\cdot)$ and treat the local costates
+$p=\nabla J_s(x)=(J_{sk}(x),J_{sL}(x))$ as fixed numbers in the pointwise maximisation.
+Let the regime-$s$ current-value Hamiltonian be
+\[
+\mathcal H_s^{\hat u}(x;u,p)
+=
+U_s(x;u)
++
+J_{sk}(x)\,\dot k_s^{\hat u}(x;u)
++
+J_{sL}(x)\,\dot L_s^{\hat u}(x;u),
+\qquad u=(\tau,T,H)\in U_s(x),
+\]
+where $U_s(x;u)=\chi u(C_s^W(x;u))+(1-\chi)u(C_s^K(x;u))$ and
+$(\dot k_s^{\hat u},\dot L_s^{\hat u})$ are induced by the competitive-equilibrium mapping
+given the anticipated rule $\hat u(\cdot)$.
+
+Define the marginal value of fiscal slack by
+\[
+\mu_s(x):=-J_{sL}(x).
+\]
+
+\paragraph{Derivative convention (Mode A).}
+Throughout, $\partial_T$ denotes the \emph{partial} derivative with respect to the current transfer
+choice $T$, holding $(k,L)$ fixed, holding $(\tau,H)$ fixed, and holding fixed the $\hat u$-induced
+equilibrium schedules evaluated at $x$ (in particular the owners' schedule $\omega_s(k,L)$ and the
+equilibrium short-rate schedule).
+Under this convention,
+\[
+\partial_T C_s^W(x;u)=1,\qquad \partial_T C_s^K(x;u)=0,\qquad \partial_T \dot L_s^{\hat u}(x;u)=1,
+\]
+and $\partial_T \dot k_s^{\hat u}(x;u)$ is read from the equilibrium mapping \emph{holding the induced
+schedules fixed at $x$}. (This is not a statement about how the rule-to-equilibrium mapping changes when
+the anticipated rule $\hat u(\cdot)$ changes.)
+
+\paragraph{MVPF interpretation.}
+Because $\partial_T \dot L_s^{\hat u}(x;u)=1$ under the Mode-A convention, $\mu_s(x)=-J_{sL}(x)$ equals
+the marginal welfare value (in current-value units) of relaxing the fiscal-slack state $L$ one-for-one
+at the margin; equivalently, it coincides with the MVPF of a marginal transfer financed one-for-one by
+slack at the margin.
+
+\paragraph{Step 1: Transfer-margin object.}
+Let $u_s^*(x)$ denote a measurable best response (argmax) of the planner at $(s,x)$.
+Define the transfer-margin welfare derivative at the implemented control by
+\[
+M_s^T(x)
+:=
+\partial_T U_s\big(x;u_s^*(x)\big)
++
+J_{sk}(x)\,\partial_T \dot k_s^{\hat u}\big(x;u_s^*(x)\big).
+\]
+On any stable region where the pointwise Hamiltonian is differentiable in $T$ and the inward-feasible
+restriction is locally inactive (so the standard pointwise FOC applies), if $T_s^*(x)$ is interior then
+$\partial_T \mathcal H_s^{\hat u}(x;u_s^*(x),p)=0$ implies
+\[
+M_s^T(x)=\mu_s(x).
+\]
+
+\paragraph{Step 2: Define the three components.}
+Define the \emph{direct transfer-flow marginal utility term} by
+\[
+\mu_s^{\,\mathrm{flow}}(x)
+:=
+\partial_T U_s\big(x;u_s^*(x)\big)
+=
+\chi\,u'\!\left(C_s^W(x;u_s^*(x))\right),
+\]
+where the last equality uses $\partial_T C_s^W=1$ and $\partial_T C_s^K=0$ under the Mode-A convention.
+(Owner incidence of slack operates through the fiscal state $L$ and is captured through the costate
+$\mu_s=-J_{sL}$ and the continuation/growth term below, not through $\partial_T U_s$ under this convention.)
+
+Define the \emph{growth/continuation term} by
+\[
+\mu_s^{\,\mathrm{grow}}(x)
+:=
+J_{sk}(x)\,\partial_T \dot k_s^{\hat u}\big(x;u_s^*(x)\big).
+\]
+In particular, under the equilibrium mapping
+\[
+\dot k = Y_s(k) - (w_s(k)+T) - \omega_s(k,L)(k+L) - (\delta+g)k,
+\]
+the Mode-A convention gives $\partial_T \dot k=-1$, hence $\mu_s^{\,\mathrm{grow}}(x)=-J_{sk}(x)$ on such
+stable regions.
+
+Finally define the \emph{non-marginality wedge} by
+\[
+\mu_s^{\,\mathrm{NM}}(x)
+:=
+\mu_s(x)-M_s^T(x)
+=
+\mu_s(x)-\mu_s^{\,\mathrm{flow}}(x)-\mu_s^{\,\mathrm{grow}}(x).
+\]
+
+\paragraph{Step 3: Identity and interpretation.}
+The identity
+\[
+\mu_s(x)=\mu_s^{\,\mathrm{flow}}(x)+\mu_s^{\,\mathrm{grow}}(x)+\mu_s^{\,\mathrm{NM}}(x)
+\]
+holds by construction. Moreover, on any stable region where the pointwise $T$-FOC applies as above,
+$\mu_s^{\,\mathrm{NM}}(x)=0$.
+
+On stable regions where the transfer instrument is not marginal (e.g.\ $T$ is pinned by an admissibility
+bound, the inward-feasible restriction binds, or the value function is not differentiable), the wedge
+$\mu_s^{\,\mathrm{NM}}(x)$ measures the gap between the shadow value $\mu_s(x)$ and the value implied by the
+(virtual) transfer margin. Under additional structure stated where needed, one may further specialise
+$\mu_s^{\,\mathrm{NM}}$ to a static fiscal inefficiency wedge associated with distortionary revenue raising.
+\end{lemma}
+
+\input{appendix}
+
+
+
+\end{document}
