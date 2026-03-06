@@ -4081,6 +4081,12 @@ def initialize_policy_safe(grid, par, prim, s, omega, M_init, T_grid=None, eps_d
     return mask_policy(u_targ, M_stable), M_stable
 
 
+# Canonical runner setup checklist:
+# 1) Load solver core sections.
+# 2) Load economics callbacks.
+# 3) Load omega updater(s).
+# 4) Run exactly one entrypoint: run_planner_frozen_omega(...) or run_planner_active_omega(...).
+# WARNING: Older "connecting code" cells are deprecated—do not run them.
 def run_planner_frozen_omega(grid, par, prim, *, lam, omega_level=0.05, T_grid=None, eps_drift=1e-12, zeta_omega=0.5, N_peel=3, max_outer=10, tol_outer=1e-8, eta_policy=0.8, m_inner_max=25, tol_policy=1e-7, coarse_init=True, verbose=True):
     base_active = np.asarray(primitive_feasible_set_fallback(grid, par, prim), dtype=bool) & grid.interior_mask
     Momega1, Momega0 = make_owner_domains(base_active)
@@ -4238,7 +4244,6 @@ plt.show()
 
 
 # In[ ]:
-
 
 
 
