@@ -2385,7 +2385,24 @@ def _require(names):
             + "\n\nRun the earlier sections that define these (especially Section 1)."
         )
 
+def _bind_smoke_compat_names():
+    """Bind legacy section-8 API names expected by smoke tests if needed."""
+    alias_pairs = [
+        ("empty_policy_like", "empty_policy_like_legacy_a"),
+        ("mask_policy", "mask_policy_legacy_a"),
+        ("policy_improvement_gatekeep", "policy_improvement_gatekeep_legacy_a"),
+        ("improve_with_prune_closure", "improve_with_prune_closure_legacy_a"),
+        ("howard_inner_loop", "howard_inner_loop_legacy_a"),
+        ("outer_loop_solver", "outer_loop_solver_legacy_a"),
+    ]
+    g = globals()
+    for public_name, legacy_name in alias_pairs:
+        if public_name not in g and legacy_name in g:
+            g[public_name] = g[legacy_name]
+
+
 def run_plan23_smoke_tests(verbose=True):
+    _bind_smoke_compat_names()
     # --------- check dependencies ----------
     _require([
         # Section 1
