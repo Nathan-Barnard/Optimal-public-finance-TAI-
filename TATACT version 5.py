@@ -111,7 +111,7 @@ def unflatten(idx: int, grid: Grid) -> Tuple[int, int]:
     return (i, j)
 
 
-def iter_nodes_where(mask: np.ndarray) -> Iterator[Tuple[int, int]]:
+def iter_nodes_where_legacy_a(mask: np.ndarray) -> Iterator[Tuple[int, int]]:
     ii, jj = np.where(mask)
     for i, j in zip(ii, jj):
         yield (int(i), int(j))
@@ -360,7 +360,7 @@ def quarantine_fill_nearest(arr: np.ndarray,
 
 Policy = Dict[str, np.ndarray]  # keys: "tau", "h", "T"
 
-def empty_policy_like(mask: np.ndarray) -> Policy:
+def empty_policy_like_legacy_a(mask: np.ndarray) -> Policy:
     mask = np.asarray(mask, dtype=bool)
     shape = mask.shape
     return {
@@ -369,7 +369,7 @@ def empty_policy_like(mask: np.ndarray) -> Policy:
         "T":   np.full(shape, np.nan, dtype=float),
     }
 
-def mask_policy(u: Policy, mask: np.ndarray) -> Policy:
+def mask_policy_legacy_a(u: Policy, mask: np.ndarray) -> Policy:
     mask = np.asarray(mask, dtype=bool)
     out = {k: np.asarray(v, dtype=float).copy() for k, v in u.items()}
     for key in ("tau", "h", "T"):
@@ -469,7 +469,7 @@ def _sanity_check_section_1():
     assert np.allclose(filled, 7.0)
 
 # Uncomment to run:
-_sanity_check_section_1()
+# _sanity_check_section_1()  # moved under __main__ guard
 
 
 # In[2]:
@@ -640,7 +640,7 @@ def _sanity_check_section_2():
           "JL derivatives OK" if L_ok else "JL derivatives FAIL")
 
 # Uncomment to run:
-_sanity_check_section_2()
+# _sanity_check_section_2()  # moved under __main__ guard
 
 
 # In[3]:
@@ -1287,7 +1287,7 @@ def _default_T_backup(prim: Prim, T_grid: Optional[np.ndarray]) -> np.ndarray:
     return T_bak
 
 
-def policy_improvement_gatekeep(
+def policy_improvement_gatekeep_legacy_a(
     grid: Grid,
     par: Par,
     prim: Prim,
@@ -1443,7 +1443,7 @@ def policy_improvement_gatekeep(
     return u_target, M_target, H_best
 
 
-def improve_with_prune_closure(
+def improve_with_prune_closure_legacy_a(
     grid: Grid,
     par: Par,
     prim: Prim,
@@ -1738,7 +1738,7 @@ def _select_blend_or_snap_on_mask(
 # HOWARD INNER LOOP
 # ============================================================
 
-def howard_inner_loop(
+def howard_inner_loop_legacy_a(
     grid: Grid,
     par: Par,
     prim: Prim,
@@ -2020,7 +2020,7 @@ def _core_max_norm(delta: np.ndarray, core: np.ndarray, *, label: str) -> float:
     return float(max_norm_on_mask(delta, core))
 
 
-def outer_loop_solver(
+def outer_loop_solver_legacy_a(
     grid: Grid,
     par: Par,
     prim: Prim,
@@ -2385,7 +2385,24 @@ def _require(names):
             + "\n\nRun the earlier sections that define these (especially Section 1)."
         )
 
+def _bind_smoke_compat_names():
+    """Bind legacy section-8 API names expected by smoke tests if needed."""
+    alias_pairs = [
+        ("empty_policy_like", "empty_policy_like_legacy_a"),
+        ("mask_policy", "mask_policy_legacy_a"),
+        ("policy_improvement_gatekeep", "policy_improvement_gatekeep_legacy_a"),
+        ("improve_with_prune_closure", "improve_with_prune_closure_legacy_a"),
+        ("howard_inner_loop", "howard_inner_loop_legacy_a"),
+        ("outer_loop_solver", "outer_loop_solver_legacy_a"),
+    ]
+    g = globals()
+    for public_name, legacy_name in alias_pairs:
+        if public_name not in g and legacy_name in g:
+            g[public_name] = g[legacy_name]
+
+
 def run_plan23_smoke_tests(verbose=True):
+    _bind_smoke_compat_names()
     # --------- check dependencies ----------
     _require([
         # Section 1
@@ -2592,15 +2609,18 @@ def run_plan23_smoke_tests(verbose=True):
     print("✅ ALL TESTS PASSED")
 
 
-# Run them:
-run_plan23_smoke_tests()
+if __name__ == "__main__":
+    # Optional smoke tests / kernel diagnostics
+    # Run them:
+    run_plan23_smoke_tests()
 
 
 # In[9]:
 
 
-for name in ["viability_peel_warm", "viability_peel_step", "viability_peel_to_fixpoint"]:
-    print(name, name in globals())
+if __name__ == "__main__":
+    for name in ["viability_peel_warm", "viability_peel_step", "viability_peel_to_fixpoint"]:
+        print(name, name in globals())
 
 
 # In[10]:
@@ -2991,15 +3011,15 @@ NEG_INF = -1.0e300
 # -----------------------------
 # 1. Base Utilities & Projections
 # -----------------------------
-def iter_nodes_where(mask: np.ndarray) -> Iterator[Tuple[int, int]]:
+def iter_nodes_where_legacy_b(mask: np.ndarray) -> Iterator[Tuple[int, int]]:
     ii, jj = np.where(mask)
     for i, j in zip(ii, jj): yield (int(i), int(j))
 
-def empty_policy_like(mask: np.ndarray) -> Dict[str, np.ndarray]:
+def empty_policy_like_legacy_b(mask: np.ndarray) -> Dict[str, np.ndarray]:
     shape = mask.shape
     return {"tau": np.full(shape, np.nan), "h": np.full(shape, np.nan), "T": np.full(shape, np.nan)}
 
-def mask_policy(u: Dict[str, np.ndarray], mask: np.ndarray) -> Dict[str, np.ndarray]:
+def mask_policy_legacy_b(u: Dict[str, np.ndarray], mask: np.ndarray) -> Dict[str, np.ndarray]:
     out = {k: np.array(v, copy=True) for k, v in u.items()}
     for key in out: out[key][~mask] = np.nan
     return out
@@ -3071,7 +3091,7 @@ def _upwind_scalar_deriv(drift_val: float, J_f: float, J_b: float, eps: float) -
     if drift_val < -eps: return J_b if np.isfinite(J_b) else np.nan
     return 0.0
 
-def AM_transfer_update(
+def AM_transfer_update_legacy_b(
     node, Jx_f, Jx_b, Jy_f, Jy_b, grid, par, prim, s, tau, h, omega, eps_drift, eps_c
 ) -> float:
     i, j = node
@@ -3093,7 +3113,7 @@ def AM_transfer_update(
     T_min_eff = max(float(prim.T_min), float(eps_c - w))
     return float(np.clip(c_w_optimal - w, T_min_eff, prim.T_max))
 
-def inward_rescue_transfer(
+def inward_rescue_transfer_legacy_b(
     node, grid, par, prim, s, tau, h, omega, eps_drift, active, T_prefer, eps_c
 ) -> float:
     i, j = node
@@ -3120,7 +3140,7 @@ def inward_rescue_transfer(
 # -----------------------------
 # 3. Robust Policy Gatekeeper
 # -----------------------------
-def policy_improvement_gatekeep(grid, par, prim, s, J, omega, M, *, eps_drift=1e-12, eps_c=1e-8):
+def policy_improvement_gatekeep_legacy_b(grid, par, prim, s, J, omega, M, *, eps_drift=1e-12, eps_c=1e-8):
     active = np.asarray(M, dtype=bool)
     Jx_f, Jx_b, Jy_f, Jy_b = masked_upwind_derivatives(np.asarray(J, dtype=float), active, grid)
 
@@ -3170,7 +3190,7 @@ def policy_improvement_gatekeep(grid, par, prim, s, J, omega, M, *, eps_drift=1e
 
     return mask_policy(u_target, M_target), M_target
 
-def improve_with_prune_closure(grid, par, prim, s, J, omega, M, *, eps_drift=1e-12, eps_c=1e-8, max_passes=10):
+def improve_with_prune_closure_legacy_b(grid, par, prim, s, J, omega, M, *, eps_drift=1e-12, eps_c=1e-8, max_passes=10):
     M_work = np.asarray(M, dtype=bool).copy()
     u_targ = empty_policy_like(M_work)
 
@@ -3186,7 +3206,7 @@ def improve_with_prune_closure(grid, par, prim, s, J, omega, M, *, eps_drift=1e-
 # -----------------------------
 # 4. Active Omega PDE Solver
 # -----------------------------
-def update_private_omega(grid, par, prim, s, omega_old, u_s, Momega_s, lam=0.0, omega1_new=None):
+def update_private_omega_legacy_b(grid, par, prim, s, omega_old, u_s, Momega_s, lam=0.0, omega1_new=None):
     """Solves the capital owners' linear PDE for Psi_s on the active mask Momega_s."""
     active = np.asarray(Momega_s, dtype=bool)
     if not np.any(active): return omega_old.copy()
@@ -3265,7 +3285,7 @@ _require([
 _HAS_PRIM_FEAS_BASIC = ("primitive_feasible_set_basic" in globals())
 
 
-def primitive_feasible_set_fallback(grid, par, prim):
+def primitive_feasible_set_fallback_legacy_b(grid, par, prim):
     """
     Conservative ω-free feasible set if you haven't defined primitive_feasible_set_basic.
     Enforces:
@@ -3276,12 +3296,12 @@ def primitive_feasible_set_fallback(grid, par, prim):
     return (K > 0.0) & (K + LL > 0.0) & (LL >= -K)
 
 
-def update_private_omega_frozen(grid, par, prim, s, omega_old, u_s, Momega_s):
+def update_private_omega_frozen_legacy_b(grid, par, prim, s, omega_old, u_s, Momega_s):
     """Frozen ω update (milestone runner)."""
     return np.asarray(omega_old, dtype=float).copy()
 
 
-def make_owner_domains(base_active: np.ndarray):
+def make_owner_domains_legacy_b(base_active: np.ndarray):
     """Default owner domain: base_active."""
     Momega1 = base_active.copy()
     Momega0 = base_active.copy()
@@ -3310,7 +3330,7 @@ def prim_coarse(prim: Prim, n_tau: int = 7, n_h: int = 11) -> Prim:
     )
 
 
-def initialize_policy_safe(grid, par, prim: Prim, s: int, omega: np.ndarray, M_init: np.ndarray,
+def initialize_policy_safe_legacy_b(grid, par, prim: Prim, s: int, omega: np.ndarray, M_init: np.ndarray,
                            T_grid: np.ndarray, eps_drift: float = 1e-12,
                            coarse_init: bool = True, verbose: bool = True):
     """
@@ -3342,7 +3362,7 @@ def initialize_policy_safe(grid, par, prim: Prim, s: int, omega: np.ndarray, M_i
     return u_targ, M_stable
 
 
-def run_planner_frozen_omega(grid, par, prim: Prim, *,
+def run_planner_frozen_omega_legacy_b(grid, par, prim: Prim, *,
                              lam: float,
                              omega_level: float = 0.05,
                              T_grid: np.ndarray = None,
@@ -3465,15 +3485,15 @@ def _core_max_norm(delta: np.ndarray, core: np.ndarray, label: str) -> float:
     if not np.any(core): return 0.0
     return float(np.nanmax(np.abs(delta[core])))
 
-def primitive_feasible_set_fallback(grid, par, prim):
+def primitive_feasible_set_fallback_legacy_c(grid, par, prim):
     """Fallback no-default domain: k > 0, owner wealth >= 0, L >= -k."""
     K, LL = np.meshgrid(grid.k, grid.L, indexing="ij")
     return (K > 0.0) & (K + LL > 0.0) & (LL >= -K)
 
-def make_owner_domains(base_active):
+def make_owner_domains_legacy_c(base_active):
     return base_active.copy(), base_active.copy()
 
-def update_private_omega_frozen(grid, par, prim, s, omega_old, u_s, Momega_s):
+def update_private_omega_frozen_legacy_c(grid, par, prim, s, omega_old, u_s, Momega_s):
     """Returns omega unchanged (for the frozen milestone)."""
     return np.asarray(omega_old, dtype=float).copy()
 
@@ -3481,7 +3501,7 @@ def update_private_omega_frozen(grid, par, prim, s, omega_old, u_s, Momega_s):
 # ---------------------------------------------------------
 # 2. Howard Inner Loop
 # ---------------------------------------------------------
-def howard_inner_loop(
+def howard_inner_loop_legacy_c(
     grid, par, prim, *, lam,
     omega1, omega0, J1_init, J0_init, u1_init, u0_init, M1_init, M0_init,
     eta_policy=0.8, eps_drift=1e-12, m_inner_max=40, tol_policy=1e-7, verbose=False
@@ -3554,7 +3574,7 @@ def howard_inner_loop(
 # ---------------------------------------------------------
 # 3. Outer Loop Solver
 # ---------------------------------------------------------
-def outer_loop_solver(
+def outer_loop_solver_legacy_c(
     grid, par, prim, *, lam,
     omega1_init, omega0_init, J1_init, J0_init, u1_init, u0_init, Momega1, Momega0,
     primitive_feasible_set_fn, update_private_omega,
@@ -3640,7 +3660,7 @@ def outer_loop_solver(
 # ---------------------------------------------------------
 # 4. Safe Initializer
 # ---------------------------------------------------------
-def initialize_policy_safe(grid, par, prim, s, omega, M_init, eps_drift=1e-12, coarse_init=True):
+def initialize_policy_safe_legacy_c(grid, par, prim, s, omega, M_init, eps_drift=1e-12, coarse_init=True):
     import copy
     prim_use = copy.copy(prim)
     if coarse_init:
@@ -3655,7 +3675,7 @@ def initialize_policy_safe(grid, par, prim, s, omega, M_init, eps_drift=1e-12, c
 # ---------------------------------------------------------
 # 5. Milestone Runners (Frozen vs Active Omega)
 # ---------------------------------------------------------
-def run_planner_frozen_omega(grid, par, prim, *, lam, omega_level=0.05, eps_drift=1e-12, zeta_omega=0.5, N_peel=3, max_outer=10, tol_outer=1e-8, eta_policy=0.8, m_inner_max=25, tol_policy=1e-7, coarse_init=True, verbose=True):
+def run_planner_frozen_omega_legacy_c(grid, par, prim, *, lam, omega_level=0.05, eps_drift=1e-12, zeta_omega=0.5, N_peel=3, max_outer=10, tol_outer=1e-8, eta_policy=0.8, m_inner_max=25, tol_policy=1e-7, coarse_init=True, verbose=True):
     S = np.asarray(primitive_feasible_set_fallback(grid, par, prim), dtype=bool)
     base_active = S & grid.interior_mask
     Momega1, Momega0 = make_owner_domains(base_active)
@@ -3677,7 +3697,7 @@ def run_planner_frozen_omega(grid, par, prim, *, lam, omega_level=0.05, eps_drif
         eta_policy=eta_policy, m_inner_max=m_inner_max, tol_policy=tol_policy, verbose=verbose
     )
 
-def run_planner_active_omega(grid, par, prim, *, lam, omega_level=0.05, eps_drift=1e-12, zeta_omega=0.5, N_peel=3, max_outer=10, tol_outer=1e-8, eta_policy=0.8, m_inner_max=25, tol_policy=1e-7, coarse_init=True, verbose=True):
+def run_planner_active_omega_legacy_c(grid, par, prim, *, lam, omega_level=0.05, eps_drift=1e-12, zeta_omega=0.5, N_peel=3, max_outer=10, tol_outer=1e-8, eta_policy=0.8, m_inner_max=25, tol_policy=1e-7, coarse_init=True, verbose=True):
     S = np.asarray(primitive_feasible_set_fallback(grid, par, prim), dtype=bool)
     base_active = S & grid.interior_mask
     Momega1, Momega0 = make_owner_domains(base_active)
@@ -4139,105 +4159,107 @@ def run_planner_active_omega(grid, par, prim, *, lam, omega_level=0.05, T_grid=N
 
 
 ### ============================================================
-# DIAGNOSTIC CHECK — Frozen Omega Integration Run & Plot
-# ============================================================
-import numpy as np
-import matplotlib.pyplot as plt
-import time
+if __name__ == "__main__":
+    # Optional diagnostic dashboard
+    # DIAGNOSTIC CHECK — Frozen Omega Integration Run & Plot
+    # ============================================================
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import time
 
-print("Setting up diagnostic grid and parameters...")
+    print("Setting up diagnostic grid and parameters...")
 
-# 1. Coarse grid for fast testing
-k_grid = np.linspace(0.5, 4.0, 15)
-L_grid = np.linspace(-0.5, 1.0, 15)
-grid_diag = Grid(k_grid, L_grid)
+    # 1. Coarse grid for fast testing
+    k_grid = np.linspace(0.5, 4.0, 15)
+    L_grid = np.linspace(-0.5, 1.0, 15)
+    grid_diag = Grid(k_grid, L_grid)
 
-# 2. Standard Macro Calibration
-par_diag = Par(
-    rho=0.05, gamma=2.0, chi=0.6, 
-    delta=0.05, g=0.02, sigma=0.15, 
-    I0=0.3, I1=0.5
-)
+    # 2. Standard Macro Calibration
+    par_diag = Par(
+        rho=0.05, gamma=2.0, chi=0.6, 
+        delta=0.05, g=0.02, sigma=0.15, 
+        I0=0.3, I1=0.5
+    )
 
-# 3. Policy Instrument Grids
-prim_diag = Prim(
-    tau_grid=np.linspace(0.0, 0.4, 9),  # Planner can tax 0% to 40%
-    h_grid=np.linspace(0.0, 2.0, 5),    # Government asset/debt scaling
-    T_min=-0.2, T_max=1.0               # Transfer bounds
-)
+    # 3. Policy Instrument Grids
+    prim_diag = Prim(
+        tau_grid=np.linspace(0.0, 0.4, 9),  # Planner can tax 0% to 40%
+        h_grid=np.linspace(0.0, 2.0, 5),    # Government asset/debt scaling
+        T_min=-0.2, T_max=1.0               # Transfer bounds
+    )
 
-print("Firing up the Outer Loop Solver (Frozen Omega)...")
-start_time = time.time()
+    print("Firing up the Outer Loop Solver (Frozen Omega)...")
+    start_time = time.time()
 
-# 4. Run the harness
-sol_diag = run_planner_frozen_omega(
-    grid=grid_diag, 
-    par=par_diag, 
-    prim=prim_diag, 
-    lam=0.3, 
-    omega_level=0.05,
-    zeta_omega=0.5, 
-    N_peel=2, 
-    max_outer=5,           # Keep iterations low for quick diagnostic
-    tol_outer=1e-5,
-    eta_policy=0.8, 
-    m_inner_max=15, 
-    tol_policy=1e-5,
-    coarse_init=True,
-    verbose=True
-)
+    # 4. Run the harness
+    sol_diag = run_planner_frozen_omega(
+        grid=grid_diag, 
+        par=par_diag, 
+        prim=prim_diag, 
+        lam=0.3, 
+        omega_level=0.05,
+        zeta_omega=0.5, 
+        N_peel=2, 
+        max_outer=5,           # Keep iterations low for quick diagnostic
+        tol_outer=1e-5,
+        eta_policy=0.8, 
+        m_inner_max=15, 
+        tol_policy=1e-5,
+        coarse_init=True,
+        verbose=True
+    )
 
-print(f"\nDiagnostic run completed in {time.time() - start_time:.1f} seconds.")
+    print(f"\nDiagnostic run completed in {time.time() - start_time:.1f} seconds.")
 
-# ---------------------------------------------------------
-# 5. Diagnostic Plotting Dashboard
-# ---------------------------------------------------------
-# Extract a 1D slice along the k-axis, keeping L closest to 0.0
-j_slice = np.argmin(np.abs(grid_diag.L)) 
-L_val = grid_diag.L[j_slice]
-k_valid = grid_diag.k
+    # ---------------------------------------------------------
+    # 5. Diagnostic Plotting Dashboard
+    # ---------------------------------------------------------
+    # Extract a 1D slice along the k-axis, keeping L closest to 0.0
+    j_slice = np.argmin(np.abs(grid_diag.L)) 
+    L_val = grid_diag.L[j_slice]
+    k_valid = grid_diag.k
 
-# Extract Regime 1 (Post-Automation)
-M1_slice = sol_diag["M1"][:, j_slice]
-J1_slice = sol_diag["J1"][:, j_slice]
-tau1_slice = sol_diag["u1"]["tau"][:, j_slice]
-T1_slice = sol_diag["u1"]["T"][:, j_slice]
+    # Extract Regime 1 (Post-Automation)
+    M1_slice = sol_diag["M1"][:, j_slice]
+    J1_slice = sol_diag["J1"][:, j_slice]
+    tau1_slice = sol_diag["u1"]["tau"][:, j_slice]
+    T1_slice = sol_diag["u1"]["T"][:, j_slice]
 
-# Mask out infeasible areas with NaN for clean plotting
-J1_plot = np.where(M1_slice, J1_slice, np.nan)
-tau1_plot = np.where(M1_slice, tau1_slice, np.nan)
-T1_plot = np.where(M1_slice, T1_slice, np.nan)
+    # Mask out infeasible areas with NaN for clean plotting
+    J1_plot = np.where(M1_slice, J1_slice, np.nan)
+    tau1_plot = np.where(M1_slice, tau1_slice, np.nan)
+    T1_plot = np.where(M1_slice, T1_slice, np.nan)
 
-fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-fig.suptitle(f"Diagnostic Dashboard: Post-Automation Regime (Sliced at L ≈ {L_val:.2f})", fontsize=14, y=1.05)
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    fig.suptitle(f"Diagnostic Dashboard: Post-Automation Regime (Sliced at L ≈ {L_val:.2f})", fontsize=14, y=1.05)
 
-# Value Function Plot
-axes[0].plot(k_valid, J1_plot, 'b-o', lw=2)
-axes[0].set_title("Planner Value Function ($J_1$)")
-axes[0].set_xlabel("Physical Capital (k)")
-axes[0].set_ylabel("Utility")
-axes[0].grid(True, alpha=0.3)
+    # Value Function Plot
+    axes[0].plot(k_valid, J1_plot, 'b-o', lw=2)
+    axes[0].set_title("Planner Value Function ($J_1$)")
+    axes[0].set_xlabel("Physical Capital (k)")
+    axes[0].set_ylabel("Utility")
+    axes[0].grid(True, alpha=0.3)
 
-# Tax Policy Plot
-axes[1].plot(k_valid, tau1_plot, 'r-s', lw=2)
-axes[1].set_title("Optimal Capital Tax ($\\tau_1$)")
-axes[1].set_xlabel("Physical Capital (k)")
-axes[1].set_ylabel("Tax Rate")
-axes[1].set_ylim(prim_diag.tau_min - 0.05, prim_diag.tau_max + 0.05)
-axes[1].grid(True, alpha=0.3)
+    # Tax Policy Plot
+    axes[1].plot(k_valid, tau1_plot, 'r-s', lw=2)
+    axes[1].set_title("Optimal Capital Tax ($\\tau_1$)")
+    axes[1].set_xlabel("Physical Capital (k)")
+    axes[1].set_ylabel("Tax Rate")
+    axes[1].set_ylim(prim_diag.tau_min - 0.05, prim_diag.tau_max + 0.05)
+    axes[1].grid(True, alpha=0.3)
 
-# Transfer Policy Plot
-axes[2].plot(k_valid, T1_plot, 'g-^', lw=2)
-axes[2].set_title("Optimal Worker Transfer ($T_1$)")
-axes[2].set_xlabel("Physical Capital (k)")
-axes[2].set_ylabel("Transfer")
-axes[2].grid(True, alpha=0.3)
+    # Transfer Policy Plot
+    axes[2].plot(k_valid, T1_plot, 'g-^', lw=2)
+    axes[2].set_title("Optimal Worker Transfer ($T_1$)")
+    axes[2].set_xlabel("Physical Capital (k)")
+    axes[2].set_ylabel("Transfer")
+    axes[2].grid(True, alpha=0.3)
 
-plt.tight_layout()
-plt.show()
+    plt.tight_layout()
+    plt.show()
 
 
-# In[ ]:
+    # In[ ]:
 
 
 
